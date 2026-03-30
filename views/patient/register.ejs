@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Create Health ID — Medical Continuity</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    body { background: #f8fafc; }
+    .reg-wrap { display:grid; grid-template-columns:260px 1fr; min-height:calc(100vh - 64px); }
+    @media(max-width:767px){ .reg-wrap{ grid-template-columns:1fr; } .reg-sidebar{ display:none; } }
+
+    /* SIDEBAR */
+    .reg-sidebar {
+      background:linear-gradient(170deg,#052e16,#14532d 55%,#166534);
+      padding:2.5rem 1.8rem; position:sticky; top:64px;
+      height:calc(100vh - 64px); display:flex; flex-direction:column;
+      overflow:hidden; position:relative;
+    }
+    .reg-sidebar::before {
+      content:''; position:absolute; inset:0; pointer-events:none;
+      background:radial-gradient(ellipse at 15% 85%,rgba(74,222,128,.08) 0%,transparent 55%);
+    }
+    .sb-brand {
+      display:flex; align-items:center; gap:10px;
+      font-family:'DM Serif Display',serif; font-size:1.1rem; color:white;
+      margin-bottom:2.5rem; position:relative; z-index:1;
+    }
+    .sb-brand i { width:34px; height:34px; border-radius:10px; background:rgba(255,255,255,.12); display:flex; align-items:center; justify-content:center; font-style:normal; }
+    .v-steps { display:flex; flex-direction:column; position:relative; z-index:1; }
+    .v-step  { display:flex; align-items:flex-start; gap:14px; }
+    .v-left  { display:flex; flex-direction:column; align-items:center; flex-shrink:0; }
+    .v-circle {
+      width:34px; height:34px; border-radius:50%;
+      border:2px solid rgba(255,255,255,.2); color:rgba(255,255,255,.35);
+      display:flex; align-items:center; justify-content:center;
+      font-size:.76rem; font-weight:700; transition:all .3s; flex-shrink:0;
+    }
+    .v-circle.active { background:white; border-color:white; color:#052e16; box-shadow:0 0 0 5px rgba(255,255,255,.12); }
+    .v-circle.done   { background:#4ade80; border-color:#4ade80; color:#052e16; }
+    .v-line { width:2px; height:34px; background:rgba(255,255,255,.12); margin:4px 0; transition:background .3s; }
+    .v-line.done { background:#4ade80; }
+    .v-body { padding:4px 0 34px; }
+    .v-body:last-child { padding-bottom:0; }
+    .v-title { font-size:.82rem; font-weight:700; color:rgba(255,255,255,.35); transition:color .3s; }
+    .v-title.active { color:white; }
+    .v-title.done   { color:#86efac; }
+    .v-desc  { font-size:.7rem; color:rgba(255,255,255,.22); margin-top:2px; }
+    .sb-note {
+      margin-top:auto; background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.1); border-radius:12px;
+      padding:14px 16px; position:relative; z-index:1;
+    }
+    .sb-note p { font-size:.72rem; color:rgba(255,255,255,.38); margin:0; line-height:1.65; }
+
+    /* CONTENT */
+    .reg-content { padding:2.5rem 3rem; overflow-y:auto; }
+    @media(max-width:767px){ .reg-content{ padding:1.5rem 1.2rem; } }
+    .step-badge {
+      display:inline-flex; align-items:center; gap:6px;
+      background:#f0fdf4; border:1px solid #bbf7d0; border-radius:20px;
+      padding:4px 12px; font-size:.72rem; font-weight:700; color:#166534;
+      margin-bottom:1rem; text-transform:uppercase; letter-spacing:.5px;
+    }
+    .ch2 { font-family:'DM Serif Display',serif; font-size:1.85rem; color:#111827; margin-bottom:4px; }
+    .ch2-sub { color:#6b7280; font-size:.87rem; margin-bottom:1.8rem; }
+    .s-title {
+      font-size:.68rem; font-weight:800; text-transform:uppercase;
+      letter-spacing:1.5px; color:#9ca3af; margin-bottom:1.1rem; margin-top:1.8rem;
+      display:flex; align-items:center; gap:10px;
+    }
+    .s-title:first-of-type { margin-top:0; }
+    .s-title::after { content:''; flex:1; height:1px; background:#f3f4f6; }
+    .form-label { font-size:.78rem; font-weight:700; color:#111827; margin-bottom:5px; letter-spacing:.1px; }
+    .form-label .req { color:#dc2626; }
+    .form-label .hint { font-weight:400; color:#9ca3af; }
+    .form-control,.form-select {
+      border:1.5px solid #e5e7eb; border-radius:10px; padding:.6rem .9rem;
+      font-size:.88rem; color:#111827; background:white; transition:all .18s;
+      box-shadow:0 1px 2px rgba(0,0,0,.04);
+    }
+    .form-control:focus,.form-select:focus { border-color:#16a34a; box-shadow:0 0 0 4px rgba(22,163,74,.1); outline:none; }
+    .form-control::placeholder { color:#c4c9d4; }
+
+    /* photo box */
+    .photo-box {
+      border:2px dashed #e5e7eb; border-radius:12px; padding:1.4rem;
+      text-align:center; cursor:pointer; transition:all .2s; background:white; position:relative;
+    }
+    .photo-box:hover { border-color:#16a34a; background:#f0fdf4; }
+    .photo-box input { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; }
+
+    /* dyn rows */
+    .drow {
+      background:white; border:1.5px solid #e5e7eb; border-radius:12px;
+      padding:1rem 1.2rem; margin-bottom:.75rem; position:relative;
+    }
+    .drow:hover { border-color:#d1d5db; }
+    .drow .dbtn {
+      position:absolute; top:10px; right:12px; width:24px; height:24px;
+      border-radius:50%; background:#fef2f2; border:1px solid #fecaca;
+      color:#dc2626; font-size:.65rem; font-weight:700; cursor:pointer;
+      display:flex; align-items:center; justify-content:center; transition:all .15s;
+    }
+    .add-btn {
+      display:inline-flex; align-items:center; gap:6px;
+      font-size:.78rem; font-weight:700; color:#166534;
+      background:#f0fdf4; border:none; border-radius:8px;
+      padding:6px 14px; cursor:pointer; transition:all .15s; margin-top:4px;
+    }
+    .add-btn:hover { background:#dcfce7; }
+
+    /* nav */
+    .fnav { display:flex; justify-content:space-between; align-items:center; margin-top:2.5rem; padding-top:1.5rem; border-top:1px solid #e5e7eb; }
+    .btn-back {
+      display:inline-flex; align-items:center; gap:6px;
+      background:white; border:1.5px solid #e5e7eb; border-radius:10px;
+      padding:.6rem 1.4rem; font-size:.88rem; font-weight:600; color:#374151; cursor:pointer; transition:all .18s;
+    }
+    .btn-back:hover { border-color:#d1d5db; background:#f9fafb; }
+    .btn-next {
+      display:inline-flex; align-items:center; gap:8px;
+      background:#16a34a; color:white; border:none; border-radius:10px;
+      padding:.65rem 1.8rem; font-size:.9rem; font-weight:700; cursor:pointer;
+      box-shadow:0 4px 16px rgba(22,163,74,.28); transition:all .18s;
+    }
+    .btn-next:hover { background:#15803d; transform:translateY(-1px); }
+    .btn-submit {
+      display:inline-flex; align-items:center; gap:8px;
+      background:#14532d; color:white; border:none; border-radius:10px;
+      padding:.7rem 2rem; font-size:.9rem; font-weight:700; cursor:pointer;
+      box-shadow:0 4px 16px rgba(5,46,22,.3); transition:all .18s;
+    }
+    .btn-submit:hover { background:#052e16; transform:translateY(-1px); }
+    .info-box {
+      background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px;
+      padding:1rem 1.25rem; font-size:.83rem; color:#166534; margin-top:1.5rem;
+    }
+    .form-step { display:none; }
+    .form-step.active { display:block; }
+    .err-box { background:#fef2f2; border:1px solid #fecaca; border-radius:10px; padding:.75rem 1rem; font-size:.85rem; color:#b91c1c; margin-bottom:1.5rem; }
+  </style>
+</head>
+<body>
+<%- include('../partials/navbar') %>
+
+<div class="reg-wrap">
+  <!-- SIDEBAR -->
+  <aside class="reg-sidebar">
+    <div class="sb-brand"><i>🏥</i> Medical Continuity</div>
+    <div class="v-steps">
+      <div class="v-step">
+        <div class="v-left"><div class="v-circle active" id="vc-1">1</div><div class="v-line" id="vl-1"></div></div>
+        <div class="v-body"><div class="v-title active" id="vt-1">Basic Info</div><div class="v-desc">Name, DOB, blood group, photo</div></div>
+      </div>
+      <div class="v-step">
+        <div class="v-left"><div class="v-circle" id="vc-2">2</div><div class="v-line" id="vl-2"></div></div>
+        <div class="v-body"><div class="v-title" id="vt-2">Emergency Contact</div><div class="v-desc">Who to call in emergencies</div></div>
+      </div>
+      <div class="v-step">
+        <div class="v-left"><div class="v-circle" id="vc-3">3</div><div class="v-line" id="vl-3"></div></div>
+        <div class="v-body"><div class="v-title" id="vt-3">Medical History</div><div class="v-desc">Medicines & past treatments</div></div>
+      </div>
+      <div class="v-step">
+        <div class="v-left"><div class="v-circle" id="vc-4">4</div></div>
+        <div class="v-body" style="padding-bottom:0"><div class="v-title" id="vt-4">Reports</div><div class="v-desc">Upload documents</div></div>
+      </div>
+    </div>
+    <div class="sb-note"><p>🔒 Your data is encrypted and shared with doctors only via OTP consent.</p></div>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="reg-content">
+    <% if (error) { %><div class="err-box">⚠️ <%= error %></div><% } %>
+    <form method="POST" action="/patient/register" enctype="multipart/form-data" id="reg-form">
+
+      <!-- STEP 1 -->
+      <div class="form-step active" id="step-1">
+        <div class="step-badge">Step 1 of 4</div>
+        <h2 class="ch2">Basic Information</h2>
+        <p class="ch2-sub">Start with your personal details. Fields marked * are required.</p>
+        <div class="s-title">Personal Details</div>
+        <div class="row g-3">
+          <div class="col-md-6"><label class="form-label">Full Name <span class="req">*</span></label><input type="text" name="name" class="form-control" placeholder="e.g. Arjun Kumar" required></div>
+          <div class="col-md-6"><label class="form-label">Phone Number <span class="req">*</span> <span class="hint">(for doctor OTP)</span></label><input type="text" name="phone" class="form-control" placeholder="+91 9876543210" required></div>
+          <div class="col-md-4"><label class="form-label">Date of Birth</label><input type="date" name="dateOfBirth" class="form-control"></div>
+          <div class="col-md-4"><label class="form-label">Gender</label><select name="gender" class="form-select"><option value="">Select</option><option>Male</option><option>Female</option><option>Other</option></select></div>
+          <div class="col-md-4"><label class="form-label">Blood Group</label><select name="bloodGroup" class="form-select"><option value="">Select</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select></div>
+          <div class="col-md-8"><label class="form-label">Address</label><input type="text" name="address" class="form-control" placeholder="City, State, Country"></div>
+          <div class="col-md-4">
+            <label class="form-label">Profile Photo</label>
+            <div class="photo-box">
+              <input type="file" name="photo" accept="image/*" onchange="previewPhoto(this)">
+              <div id="prev-wrap" style="display:none;margin-bottom:8px"><img id="prev-img" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid #16a34a"></div>
+              <div id="ph-icon" style="font-size:1.8rem">📷</div>
+              <div style="font-size:.78rem;font-weight:600;color:#111827" id="ph-lbl">Click to upload</div>
+              <div style="font-size:.7rem;color:#9ca3af">JPG or PNG, max 5MB</div>
+            </div>
+          </div>
+        </div>
+        <div class="fnav"><div></div><button type="button" class="btn-next" onclick="nextStep()">Continue to Emergency Contact <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></button></div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="form-step" id="step-2">
+        <div class="step-badge">Step 2 of 4</div>
+        <h2 class="ch2">Emergency Contact</h2>
+        <p class="ch2-sub">This person receives the OTP when a doctor requests access to your records.</p>
+        <div class="s-title">Contact Person</div>
+        <div class="row g-3">
+          <div class="col-md-6"><label class="form-label">Full Name <span class="req">*</span></label><input type="text" name="emergencyName" class="form-control" placeholder="Parent / Spouse / Guardian"></div>
+          <div class="col-md-6"><label class="form-label">Relation</label><input type="text" name="emergencyRelation" class="form-control" placeholder="Father / Mother / Spouse"></div>
+          <div class="col-md-6"><label class="form-label">Phone Number <span class="req">*</span></label><input type="text" name="emergencyContact" class="form-control" placeholder="+91 9876543210"></div>
+        </div>
+        <div class="s-title" style="margin-top:2rem">Known Medical Conditions</div>
+        <div class="row g-3">
+          <div class="col-md-6"><label class="form-label">Allergies <span class="hint">(optional)</span></label><input type="text" name="allergies" class="form-control" placeholder="Penicillin, Dust, Pollen..."></div>
+          <div class="col-md-6"><label class="form-label">Chronic Diseases <span class="hint">(optional)</span></label><input type="text" name="chronicDiseases" class="form-control" placeholder="Diabetes, Hypertension..."></div>
+        </div>
+        <div class="info-box">🔒 <strong>Privacy note:</strong> Only emergency contact name and blood group are shown when your QR is scanned publicly. Full records require doctor login + OTP.</div>
+        <div class="fnav">
+          <button type="button" class="btn-back" onclick="prevStep()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg> Back</button>
+          <button type="button" class="btn-next" onclick="nextStep()">Continue to Medical History <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="form-step" id="step-3">
+        <div class="step-badge">Step 3 of 4</div>
+        <h2 class="ch2">Medical History</h2>
+        <p class="ch2-sub">Add current medicines and past treatments. Skip if not applicable.</p>
+        <div class="s-title">Current Medicines</div>
+        <div id="medicineContainer">
+          <div class="drow"><button type="button" class="dbtn" onclick="removeRow(this)">✕</button><div class="row g-2"><div class="col-md-3"><label class="form-label">Medicine</label><input type="text" name="medicineName[]" class="form-control" placeholder="Name"></div><div class="col-md-3"><label class="form-label">Dosage</label><input type="text" name="medicineDosage[]" class="form-control" placeholder="500mg"></div><div class="col-md-3"><label class="form-label">Duration</label><input type="text" name="medicineDuration[]" class="form-control" placeholder="3 months"></div><div class="col-md-3"><label class="form-label">Reason</label><input type="text" name="medicineReason[]" class="form-control" placeholder="For..."></div></div></div>
+        </div>
+        <button type="button" class="add-btn" onclick="addMedicine()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Medicine</button>
+        <div class="s-title" style="margin-top:2rem">Past Treatments</div>
+        <div id="historyContainer">
+          <div class="drow"><button type="button" class="dbtn" onclick="removeRow(this)">✕</button><div class="row g-2"><div class="col-md-2"><label class="form-label">Date</label><input type="date" name="historyDate[]" class="form-control"></div><div class="col-md-3"><label class="form-label">Hospital</label><input type="text" name="historyHospital[]" class="form-control" placeholder="Hospital name"></div><div class="col-md-3"><label class="form-label">Diagnosis</label><input type="text" name="historyDiagnosis[]" class="form-control" placeholder="Condition"></div><div class="col-md-2"><label class="form-label">Treatment</label><input type="text" name="historyTreatment[]" class="form-control" placeholder="Treatment"></div><div class="col-md-2"><label class="form-label">Doctor</label><input type="text" name="historyDoctor[]" class="form-control" placeholder="Dr. name"></div></div></div>
+        </div>
+        <button type="button" class="add-btn" onclick="addHistory()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Treatment</button>
+        <div class="fnav">
+          <button type="button" class="btn-back" onclick="prevStep()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg> Back</button>
+          <button type="button" class="btn-next" onclick="nextStep()">Continue to Reports <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+        </div>
+      </div>
+
+      <!-- STEP 4 -->
+      <div class="form-step" id="step-4">
+        <div class="step-badge">Step 4 of 4 — Final Step</div>
+        <h2 class="ch2">Upload Reports</h2>
+        <p class="ch2-sub">Upload existing reports, prescriptions or lab results. You can add more later from your dashboard.</p>
+        <div id="reportContainer">
+          <div class="drow"><button type="button" class="dbtn" onclick="removeRow(this)">✕</button><div class="row g-2"><div class="col-md-4"><label class="form-label">Title</label><input type="text" name="reportTitle[]" class="form-control" placeholder="e.g. Blood Test Report"></div><div class="col-md-4"><label class="form-label">Note <span class="hint">(optional)</span></label><input type="text" name="reportDescription[]" class="form-control" placeholder="Brief description"></div><div class="col-md-4"><label class="form-label">File <span class="hint">(image or PDF)</span></label><input type="file" name="reportFiles" class="form-control" accept="image/*,.pdf"></div></div></div>
+        </div>
+        <button type="button" class="add-btn" onclick="addReport()" style="margin-bottom:1.5rem"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Another Report</button>
+
+        <div style="background:white;border:1.5px solid #e5e7eb;border-radius:14px;padding:1.25rem 1.5rem;margin-top:1rem">
+          <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:#9ca3af;margin-bottom:1rem">What you'll get</div>
+          <div style="display:flex;gap:2.5rem;flex-wrap:wrap">
+            <div><div style="font-size:.68rem;color:#9ca3af;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Identity</div><div style="font-size:.85rem;font-weight:600;color:#111827">🆔 Unique Health ID</div></div>
+            <div><div style="font-size:.68rem;color:#9ca3af;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Instantly</div><div style="font-size:.85rem;font-weight:600;color:#111827">📱 Personal QR Code</div></div>
+            <div><div style="font-size:.68rem;color:#9ca3af;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Security</div><div style="font-size:.85rem;font-weight:600;color:#111827">🔒 OTP Consent System</div></div>
+          </div>
+        </div>
+        <div class="fnav">
+          <button type="button" class="btn-back" onclick="prevStep()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg> Back</button>
+          <button type="submit" class="btn-submit"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Generate My Health ID</button>
+        </div>
+      </div>
+    </form>
+  </main>
+</div>
+
+<%- include('../partials/footer') %>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+let cur = 1;
+const hints = ['Step 1 of 4 — Basic Information','Step 2 of 4 — Emergency Contact','Step 3 of 4 — Medical History','Step 4 of 4 — Upload Reports'];
+function sync(n) {
+  for(let i=1;i<=4;i++){
+    const vc=document.getElementById('vc-'+i), vt=document.getElementById('vt-'+i);
+    vc.className='v-circle '+(i<n?'done':i===n?'active':'');
+    vt.className='v-title '+(i<n?'done':i===n?'active':'');
+    vc.textContent=i<n?'✓':i;
+    if(i<4){ const vl=document.getElementById('vl-'+i); vl.className='v-line '+(i<n?'done':''); }
+  }
+}
+function showStep(n){
+  document.querySelectorAll('.form-step').forEach(e=>e.classList.remove('active'));
+  document.getElementById('step-'+n).classList.add('active');
+  sync(n); window.scrollTo({top:0,behavior:'smooth'});
+}
+function nextStep(){
+  if(cur===1){
+    const nm=document.querySelector('[name="name"]').value.trim();
+    const ph=document.querySelector('[name="phone"]').value.trim();
+    if(!nm||!ph){alert('Please enter your name and phone number.');return;}
+  }
+  if(cur<4){cur++;showStep(cur);}
+}
+function prevStep(){ if(cur>1){cur--;showStep(cur);} }
+function previewPhoto(input){
+  if(input.files&&input.files[0]){
+    const r=new FileReader();
+    r.onload=e=>{
+      document.getElementById('prev-img').src=e.target.result;
+      document.getElementById('prev-wrap').style.display='block';
+      document.getElementById('ph-icon').style.display='none';
+      document.getElementById('ph-lbl').textContent=input.files[0].name;
+    };
+    r.readAsDataURL(input.files[0]);
+  }
+}
+function mkRow(html){ const d=document.createElement('div'); d.className='drow'; d.innerHTML='<button type="button" class="dbtn" onclick="removeRow(this)">✕</button><div class="row g-2">'+html+'</div>'; return d; }
+function addMedicine(){ document.getElementById('medicineContainer').appendChild(mkRow('<div class="col-md-3"><label class="form-label">Medicine</label><input type="text" name="medicineName[]" class="form-control" placeholder="Name"></div><div class="col-md-3"><label class="form-label">Dosage</label><input type="text" name="medicineDosage[]" class="form-control" placeholder="500mg"></div><div class="col-md-3"><label class="form-label">Duration</label><input type="text" name="medicineDuration[]" class="form-control" placeholder="3 months"></div><div class="col-md-3"><label class="form-label">Reason</label><input type="text" name="medicineReason[]" class="form-control" placeholder="For..."></div>')); }
+function addHistory(){ document.getElementById('historyContainer').appendChild(mkRow('<div class="col-md-2"><label class="form-label">Date</label><input type="date" name="historyDate[]" class="form-control"></div><div class="col-md-3"><label class="form-label">Hospital</label><input type="text" name="historyHospital[]" class="form-control" placeholder="Hospital name"></div><div class="col-md-3"><label class="form-label">Diagnosis</label><input type="text" name="historyDiagnosis[]" class="form-control" placeholder="Condition"></div><div class="col-md-2"><label class="form-label">Treatment</label><input type="text" name="historyTreatment[]" class="form-control" placeholder="Treatment"></div><div class="col-md-2"><label class="form-label">Doctor</label><input type="text" name="historyDoctor[]" class="form-control" placeholder="Dr. name"></div>')); }
+function addReport(){ document.getElementById('reportContainer').appendChild(mkRow('<div class="col-md-4"><label class="form-label">Title</label><input type="text" name="reportTitle[]" class="form-control" placeholder="e.g. X-Ray"></div><div class="col-md-4"><label class="form-label">Note</label><input type="text" name="reportDescription[]" class="form-control" placeholder="Description"></div><div class="col-md-4"><label class="form-label">File</label><input type="file" name="reportFiles" class="form-control" accept="image/*,.pdf"></div>')); }
+function removeRow(btn){ btn.parentElement.remove(); }
+</script>
+</body>
+</html>

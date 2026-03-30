@@ -1,0 +1,74 @@
+<nav class="navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+        <rect width="26" height="26" rx="7" fill="#16a34a"/>
+        <path d="M13 6v14M6 13h14" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      Medical Continuity
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="nav">
+      <ul class="navbar-nav ms-auto align-items-center gap-1">
+        <li class="nav-item"><a class="nav-link" href="/#features">Features</a></li>
+        <li class="nav-item"><a class="nav-link" href="/scan">Scan QR</a></li>
+        <li class="nav-item"><a class="nav-link" href="/doctor/login">For Doctors</a></li>
+        <li class="nav-item"><a class="nav-link" href="/admin/login">Admin</a></li>
+        <li class="nav-item ms-2">
+          <div class="position-relative" id="patient-nav-item">
+            <button class="btn btn-sm d-flex align-items-center gap-2 fw-600"
+                    style="background:var(--green-light);color:var(--green-mid);border:1.5px solid var(--border-green);border-radius:20px;padding:6px 16px;font-weight:600;font-size:0.85rem"
+                    onclick="togglePatientPanel()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              My Health ID
+            </button>
+            <div id="patient-panel"
+                 style="display:none;position:absolute;right:0;top:calc(100% + 10px);width:280px;background:white;border-radius:14px;box-shadow:0 8px 40px rgba(0,0,0,0.12);border:1px solid var(--border);padding:1.2rem;z-index:9999">
+              <p style="font-size:0.82rem;color:var(--muted);margin-bottom:0.75rem;font-weight:500">Enter your registered phone number to access your health dashboard</p>
+              <div class="d-flex gap-2">
+                <input type="tel" id="patient-phone-input" class="form-control form-control-sm"
+                       placeholder="Phone number" maxlength="15">
+                <button class="btn btn-primary btn-sm" onclick="goToPatientDashboard()" style="white-space:nowrap;padding:0 16px">Go</button>
+              </div>
+              <div id="patient-panel-error" style="display:none;color:var(--danger);font-size:0.78rem;margin-top:0.5rem;font-weight:600"></div>
+              <hr style="margin:0.9rem 0;border-color:var(--border)">
+              <a href="/patient/register" style="font-size:0.82rem;color:var(--green);font-weight:600;text-decoration:none;display:flex;align-items:center;gap:6px">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                New patient? Register here
+              </a>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item ms-1">
+          <a class="btn btn-primary btn-sm" href="/patient/register" style="border-radius:20px;padding:6px 18px;font-size:0.85rem">Create Health ID</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<script>
+  function togglePatientPanel() {
+    const panel = document.getElementById('patient-panel');
+    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+    if (panel.style.display === 'block') setTimeout(() => document.getElementById('patient-phone-input').focus(), 50);
+  }
+  function goToPatientDashboard() {
+    let phone = document.getElementById('patient-phone-input').value.trim();
+    const err = document.getElementById('patient-panel-error');
+    if (!phone || phone.length < 7) { err.style.display='block'; err.textContent='Please enter a valid phone number.'; return; }
+    // Normalize: remove +91 prefix so lookup matches stored format
+    phone = phone.replace(/[\s\-\.]/g,'');
+    if (phone.startsWith('+91') && phone.length === 13) phone = phone.slice(3);
+    else if (phone.startsWith('91') && phone.length === 12) phone = phone.slice(2);
+    err.style.display = 'none';
+    window.location.href = '/patient/dashboard/' + encodeURIComponent(phone);
+  }
+  document.addEventListener('click', function(e) {
+    const item = document.getElementById('patient-nav-item');
+    if (item && !item.contains(e.target)) { const p = document.getElementById('patient-panel'); if (p) p.style.display='none'; }
+  });
+  const inp = document.getElementById('patient-phone-input');
+  if (inp) inp.addEventListener('keydown', e => { if (e.key==='Enter') goToPatientDashboard(); });
+</script>

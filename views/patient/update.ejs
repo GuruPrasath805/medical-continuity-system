@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Update Medical Details — Medical Continuity</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    body{background:#f8fafc}
+    .upd-hero{background:linear-gradient(135deg,#052e16,#166534);padding:2rem 0 4rem;color:white}
+    .upd-hero h1{font-family:'DM Serif Display',serif;font-size:1.9rem;margin-bottom:4px}
+    .upd-hero p{font-size:.85rem;color:rgba(255,255,255,.55)}
+    .cards-pull{margin-top:-2.5rem;position:relative;z-index:2}
+    .tab-nav{background:white;border:1px solid #e5e7eb;border-radius:16px;padding:.5rem;display:flex;gap:.3rem;margin-bottom:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+    .tab-btn{flex:1;padding:.6rem .8rem;border:none;border-radius:10px;font-size:.82rem;font-weight:700;color:#6b7280;background:transparent;cursor:pointer;transition:all .2s;text-align:center}
+    .tab-btn.active{background:#16a34a;color:white;box-shadow:0 2px 8px rgba(22,163,74,.3)}
+    .tab-pane{display:none}.tab-pane.active{display:block}
+    .sec-title{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:#9ca3af;margin-bottom:1rem;margin-top:1.5rem;display:flex;align-items:center;gap:10px}
+    .sec-title:first-of-type{margin-top:0}
+    .sec-title::after{content:'';flex:1;height:1px;background:#f3f4f6}
+    .form-label{font-size:.78rem;font-weight:700;color:#111827;margin-bottom:5px}
+    .form-control,.form-select{border:1.5px solid #e5e7eb;border-radius:10px;padding:.6rem .9rem;font-size:.88rem;transition:all .18s}
+    .form-control:focus,.form-select:focus{border-color:#16a34a;box-shadow:0 0 0 4px rgba(22,163,74,.1);outline:none}
+    .drow{background:white;border:1.5px solid #e5e7eb;border-radius:12px;padding:1rem 1.2rem;margin-bottom:.75rem;position:relative}
+    .drow:hover{border-color:#d1d5db}
+    .drow .dbtn{position:absolute;top:10px;right:12px;width:24px;height:24px;border-radius:50%;background:#fef2f2;border:1px solid #fecaca;color:#dc2626;font-size:.65rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center}
+    .add-btn{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:700;color:#166534;background:#f0fdf4;border:none;border-radius:8px;padding:6px 14px;cursor:pointer;transition:all .15s;margin-top:4px}
+    .add-btn:hover{background:#dcfce7}
+    .save-bar{background:white;border-top:1px solid #e5e7eb;padding:1rem 0;position:sticky;bottom:0;z-index:10}
+    .alert-success-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:.75rem 1rem;font-size:.85rem;color:#166534;margin-bottom:1rem}
+    .alert-err-box{background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:.75rem 1rem;font-size:.85rem;color:#b91c1c;margin-bottom:1rem}
+  </style>
+</head>
+<body>
+<%- include('../partials/navbar') %>
+
+<div class="upd-hero">
+  <div class="container">
+    <a href="/patient/dashboard/<%= patient.phone %>" style="color:rgba(255,255,255,.5);font-size:.82rem;text-decoration:none">← Back to Dashboard</a>
+    <h1 class="mt-2">Update Medical Details</h1>
+    <p>Keep your medical information up to date for accurate emergency care</p>
+  </div>
+</div>
+
+<div class="container pb-5 cards-pull">
+  <% if(success){ %><div class="alert-success-box">✅ <%= success %></div><% } %>
+  <% if(error){   %><div class="alert-err-box">⚠️ <%= error %></div><% } %>
+
+  <!-- Tab Navigation -->
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="showTab('emergency',this)">Emergency Contact</button>
+    <button class="tab-btn" onclick="showTab('conditions',this)">Conditions</button>
+    <button class="tab-btn" onclick="showTab('medicines',this)">Medicines</button>
+    <button class="tab-btn" onclick="showTab('history',this)">History</button>
+  </div>
+
+  <form method="POST" action="/patient/update/<%= patient.phone %>">
+
+    <!-- TAB 1: Emergency Contact -->
+    <div class="tab-pane active" id="tab-emergency">
+      <div class="card-box">
+        <div class="sec-title">Emergency Contact Person</div>
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label">Full Name</label>
+            <input type="text" name="emergencyName" class="form-control" value="<%= patient.emergencyName %>">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Relation</label>
+            <input type="text" name="emergencyRelation" class="form-control" value="<%= patient.emergencyRelation %>">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Phone Number</label>
+            <input type="text" name="emergencyContact" class="form-control" value="<%= patient.emergencyContact %>">
+          </div>
+        </div>
+        <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:.85rem 1rem;margin-top:1rem;font-size:.82rem;color:#92400e">
+          ⚠️ <strong>Important:</strong> This number receives the OTP when a doctor requests access to your records. Make sure it is always reachable.
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: Conditions -->
+    <div class="tab-pane" id="tab-conditions">
+      <div class="card-box">
+        <div class="sec-title">Known Medical Conditions</div>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Allergies</label>
+            <input type="text" name="allergies" class="form-control" value="<%= patient.allergies %>" placeholder="Penicillin, Dust, Pollen...">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Chronic Diseases</label>
+            <input type="text" name="chronicDiseases" class="form-control" value="<%= patient.chronicDiseases %>" placeholder="Diabetes, Hypertension...">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: Medicines -->
+    <div class="tab-pane" id="tab-medicines">
+      <div class="card-box">
+        <div class="sec-title">Current Medicines</div>
+        <div id="medicineContainer">
+          <% if(patient.medicines && patient.medicines.length > 0){ %>
+            <% patient.medicines.forEach(function(m){ if(m.name){ %>
+            <div class="drow">
+              <button type="button" class="dbtn" onclick="removeRow(this)">✕</button>
+              <div class="row g-2">
+                <div class="col-md-3"><label class="form-label">Medicine</label><input type="text" name="medicineName[]" class="form-control" value="<%= m.name %>"></div>
+                <div class="col-md-3"><label class="form-label">Dosage</label><input type="text" name="medicineDosage[]" class="form-control" value="<%= m.dosage %>"></div>
+                <div class="col-md-3"><label class="form-label">Duration</label><input type="text" name="medicineDuration[]" class="form-control" value="<%= m.duration %>"></div>
+                <div class="col-md-3"><label class="form-label">Reason</label><input type="text" name="medicineReason[]" class="form-control" value="<%= m.reason %>"></div>
+              </div>
+            </div>
+            <% } }); %>
+          <% } else { %>
+            <div class="drow">
+              <button type="button" class="dbtn" onclick="removeRow(this)">✕</button>
+              <div class="row g-2">
+                <div class="col-md-3"><label class="form-label">Medicine</label><input type="text" name="medicineName[]" class="form-control" placeholder="Name"></div>
+                <div class="col-md-3"><label class="form-label">Dosage</label><input type="text" name="medicineDosage[]" class="form-control" placeholder="500mg"></div>
+                <div class="col-md-3"><label class="form-label">Duration</label><input type="text" name="medicineDuration[]" class="form-control" placeholder="3 months"></div>
+                <div class="col-md-3"><label class="form-label">Reason</label><input type="text" name="medicineReason[]" class="form-control" placeholder="For..."></div>
+              </div>
+            </div>
+          <% } %>
+        </div>
+        <button type="button" class="add-btn" onclick="addMedicine()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Medicine
+        </button>
+      </div>
+    </div>
+
+    <!-- TAB 4: History -->
+    <div class="tab-pane" id="tab-history">
+      <div class="card-box">
+        <div class="sec-title">Past Treatments & Hospitalizations</div>
+        <div id="historyContainer">
+          <% if(patient.medicalHistory && patient.medicalHistory.length > 0){ %>
+            <% patient.medicalHistory.forEach(function(h){ if(h.date||h.diagnosis){ %>
+            <div class="drow">
+              <button type="button" class="dbtn" onclick="removeRow(this)">✕</button>
+              <div class="row g-2">
+                <div class="col-md-2"><label class="form-label">Date</label><input type="date" name="historyDate[]" class="form-control" value="<%= h.date %>"></div>
+                <div class="col-md-3"><label class="form-label">Hospital</label><input type="text" name="historyHospital[]" class="form-control" value="<%= h.hospital %>"></div>
+                <div class="col-md-3"><label class="form-label">Diagnosis</label><input type="text" name="historyDiagnosis[]" class="form-control" value="<%= h.diagnosis %>"></div>
+                <div class="col-md-2"><label class="form-label">Treatment</label><input type="text" name="historyTreatment[]" class="form-control" value="<%= h.treatment %>"></div>
+                <div class="col-md-2"><label class="form-label">Doctor</label><input type="text" name="historyDoctor[]" class="form-control" value="<%= h.doctor %>"></div>
+              </div>
+            </div>
+            <% } }); %>
+          <% } else { %>
+            <div class="drow">
+              <button type="button" class="dbtn" onclick="removeRow(this)">✕</button>
+              <div class="row g-2">
+                <div class="col-md-2"><label class="form-label">Date</label><input type="date" name="historyDate[]" class="form-control"></div>
+                <div class="col-md-3"><label class="form-label">Hospital</label><input type="text" name="historyHospital[]" class="form-control" placeholder="Hospital name"></div>
+                <div class="col-md-3"><label class="form-label">Diagnosis</label><input type="text" name="historyDiagnosis[]" class="form-control" placeholder="Condition"></div>
+                <div class="col-md-2"><label class="form-label">Treatment</label><input type="text" name="historyTreatment[]" class="form-control" placeholder="Treatment"></div>
+                <div class="col-md-2"><label class="form-label">Doctor</label><input type="text" name="historyDoctor[]" class="form-control" placeholder="Dr. name"></div>
+              </div>
+            </div>
+          <% } %>
+        </div>
+        <button type="button" class="add-btn" onclick="addHistory()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Treatment
+        </button>
+      </div>
+    </div>
+
+    <!-- Save Bar -->
+    <div class="save-bar">
+      <div class="container d-flex justify-content-between align-items-center">
+        <a href="/patient/dashboard/<%= patient.phone %>" style="font-size:.85rem;color:#6b7280;text-decoration:none">← Back to Dashboard</a>
+        <button type="submit" class="btn btn-primary px-5">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="margin-right:6px"><polyline points="20 6 9 17 4 12"/></svg>
+          Save All Changes
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<%- include('../partials/footer') %>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+function mkRow(html) {
+  const d = document.createElement('div');
+  d.className = 'drow';
+  d.innerHTML = '<button type="button" class="dbtn" onclick="removeRow(this)">✕</button><div class="row g-2">' + html + '</div>';
+  return d;
+}
+function addMedicine() {
+  document.getElementById('medicineContainer').appendChild(mkRow('<div class="col-md-3"><label class="form-label">Medicine</label><input type="text" name="medicineName[]" class="form-control" placeholder="Name"></div><div class="col-md-3"><label class="form-label">Dosage</label><input type="text" name="medicineDosage[]" class="form-control" placeholder="500mg"></div><div class="col-md-3"><label class="form-label">Duration</label><input type="text" name="medicineDuration[]" class="form-control" placeholder="3 months"></div><div class="col-md-3"><label class="form-label">Reason</label><input type="text" name="medicineReason[]" class="form-control" placeholder="For..."></div>'));
+}
+function addHistory() {
+  document.getElementById('historyContainer').appendChild(mkRow('<div class="col-md-2"><label class="form-label">Date</label><input type="date" name="historyDate[]" class="form-control"></div><div class="col-md-3"><label class="form-label">Hospital</label><input type="text" name="historyHospital[]" class="form-control" placeholder="Hospital name"></div><div class="col-md-3"><label class="form-label">Diagnosis</label><input type="text" name="historyDiagnosis[]" class="form-control" placeholder="Condition"></div><div class="col-md-2"><label class="form-label">Treatment</label><input type="text" name="historyTreatment[]" class="form-control" placeholder="Treatment"></div><div class="col-md-2"><label class="form-label">Doctor</label><input type="text" name="historyDoctor[]" class="form-control" placeholder="Dr. name"></div>'));
+}
+function removeRow(btn) { btn.parentElement.remove(); }
+</script>
+</body>
+</html>

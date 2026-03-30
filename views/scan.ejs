@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#111827">
+  <title>Emergency QR Scanner</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #111827;
+      color: white;
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .top-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 20px;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(10px);
+      position: relative; z-index: 10;
+    }
+    .brand { font-size: 1rem; font-weight: 700; color: #4ade80; letter-spacing: 0.3px; }
+    .subtitle { font-size: 0.72rem; color: rgba(255,255,255,0.5); margin-top: 1px; }
+    .emergency-pill {
+      background: #dc2626; color: white; font-size: 0.72rem; font-weight: 700;
+      padding: 4px 12px; border-radius: 50px; letter-spacing: 0.5px;
+    }
+    .camera-wrap { position: relative; flex: 1; background: #000; overflow: hidden; min-height: 260px; }
+    #qr-video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .overlay { position: absolute; inset: 0; pointer-events: none; }
+    .dark-mask { position: absolute; background: rgba(0,0,0,0.55); }
+    .scan-box { position: absolute; border-radius: 16px; }
+    .corner { position: absolute; width: 28px; height: 28px; border-color: #4ade80; border-style: solid; }
+    .corner.tl { top:-2px; left:-2px; border-width:4px 0 0 4px; border-radius:8px 0 0 0; }
+    .corner.tr { top:-2px; right:-2px; border-width:4px 4px 0 0; border-radius:0 8px 0 0; }
+    .corner.bl { bottom:-2px; left:-2px; border-width:0 0 4px 4px; border-radius:0 0 0 8px; }
+    .corner.br { bottom:-2px; right:-2px; border-width:0 4px 4px 0; border-radius:0 0 8px 0; }
+    .scan-line {
+      position: absolute; left:0; right:0; height:2.5px;
+      background: linear-gradient(90deg,transparent 0%,#4ade80 30%,#22c55e 50%,#4ade80 70%,transparent 100%);
+      box-shadow: 0 0 8px #4ade80, 0 0 20px rgba(74,222,128,0.4);
+      animation: laserMove 2s ease-in-out infinite;
+    }
+    @keyframes laserMove {
+      0%  { top:0%; } 50% { top:95%; } 51% { top:0%; opacity:0; } 52% { opacity:1; } 100% { top:95%; }
+    }
+    .scan-flash {
+      position:absolute; inset:0; background:rgba(74,222,128,0.3);
+      border-radius:16px; opacity:0; transition:opacity 0.1s; pointer-events:none;
+    }
+    .scan-flash.active { opacity:1; }
+    .camera-placeholder {
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      height:100%; min-height:260px; color:rgba(255,255,255,0.3); text-align:center; padding:20px;
+    }
+    .cam-icon { font-size:4rem; margin-bottom:12px; opacity:0.4; }
+    .camera-placeholder p { font-size:0.9rem; line-height:1.6; }
+    .bottom-panel {
+      background: rgba(17,24,39,0.97); backdrop-filter:blur(12px);
+      padding:18px 20px 32px; border-top:1px solid rgba(255,255,255,0.08);
+    }
+    .status-row { display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:14px; }
+    .status-dot { width:10px; height:10px; border-radius:50%; background:#4ade80; animation:pulse 1.4s infinite; flex-shrink:0; }
+    .status-dot.off { background:#6b7280; animation:none; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
+    .status-text { font-size:0.88rem; color:rgba(255,255,255,0.75); font-weight:500; }
+    .start-btn {
+      width:100%; background:#16a34a; color:white; border:none; border-radius:12px;
+      padding:15px; font-size:1rem; font-weight:700; cursor:pointer;
+      display:flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;
+    }
+    .start-btn:hover { background:#15803d; }
+    .or-divider {
+      display:flex; align-items:center; gap:10px;
+      color:rgba(255,255,255,0.3); font-size:0.78rem; margin:14px 0;
+    }
+    .or-divider::before,.or-divider::after { content:''; flex:1; height:1px; background:rgba(255,255,255,0.1); }
+    .manual-row { display:flex; gap:8px; }
+    .manual-input {
+      flex:1; background:rgba(255,255,255,0.07); border:1.5px solid rgba(255,255,255,0.12);
+      border-radius:10px; color:white; padding:10px 14px; font-size:0.88rem; outline:none; transition:border-color 0.2s;
+    }
+    .manual-input:focus { border-color:#4ade80; background:rgba(255,255,255,0.1); }
+    .manual-input::placeholder { color:rgba(255,255,255,0.3); }
+    .go-btn {
+      background:#4ade80; color:#111827; border:none; border-radius:10px;
+      padding:10px 18px; font-weight:700; font-size:0.9rem; cursor:pointer; white-space:nowrap;
+    }
+    .go-btn:hover { background:#22c55e; }
+    .err { color:#f87171; font-size:0.8rem; margin-top:8px; font-weight:500; }
+    .info-note {
+      margin-top:16px; background:rgba(255,255,255,0.05); border-radius:10px;
+      padding:12px 14px; font-size:0.78rem; color:rgba(255,255,255,0.45); text-align:center; line-height:1.5;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <div>
+      <div class="brand">🏥 Emergency QR Scanner</div>
+      <div class="subtitle">Medical Continuity — Public Access · No login required</div>
+    </div>
+    <span class="emergency-pill">🚨 FREE</span>
+  </div>
+
+  <div class="camera-wrap" id="camera-wrap">
+    <div class="camera-placeholder" id="placeholder">
+      <div class="cam-icon">📷</div>
+      <p>Tap <strong style="color:#4ade80">Start Scanner</strong> below<br>to open your camera and scan<br>a patient's health QR code</p>
+    </div>
+    <video id="qr-video" autoplay playsinline muted style="display:none"></video>
+    <div class="overlay" id="overlay" style="display:none">
+      <div class="dark-mask" id="mt"></div>
+      <div class="dark-mask" id="mb"></div>
+      <div class="dark-mask" id="ml"></div>
+      <div class="dark-mask" id="mr"></div>
+      <div class="scan-box" id="scan-box">
+        <div class="corner tl"></div><div class="corner tr"></div>
+        <div class="corner bl"></div><div class="corner br"></div>
+        <div class="scan-line"></div>
+        <div class="scan-flash" id="flash"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-panel">
+    <div class="status-row">
+      <div class="status-dot off" id="sdot"></div>
+      <span class="status-text" id="stxt">Camera off — tap Start to begin</span>
+    </div>
+    <button class="start-btn" id="main-btn" onclick="toggleCam()">
+      <span id="bico">📷</span><span id="blbl">Start Scanner</span>
+    </button>
+    <div class="or-divider">or paste QR link manually</div>
+    <div class="manual-row">
+      <input class="manual-input" id="murl" placeholder="Paste QR URL or token here…" type="text">
+      <button class="go-btn" onclick="handleManual()">Go →</button>
+    </div>
+    <div class="err" id="errmsg" style="display:none"></div>
+    <div class="info-note">
+      🔒 Scanning shows only emergency contact &amp; basic info.<br>Full medical records are protected — doctors need OTP.
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+<script>
+  let stream=null, ticker=null, live=false;
+  const video=document.getElementById('qr-video');
+  const overlay=document.getElementById('overlay');
+  const ph=document.getElementById('placeholder');
+  const scanBox=document.getElementById('scan-box');
+  const flash=document.getElementById('flash');
+  const sdot=document.getElementById('sdot');
+  const stxt=document.getElementById('stxt');
+  const canvas=document.createElement('canvas');
+  const ctx=canvas.getContext('2d');
+
+  function layout(){
+    const w=document.getElementById('camera-wrap').clientWidth;
+    const h=document.getElementById('camera-wrap').clientHeight;
+    const sz=Math.min(w,h)*0.64;
+    const bx=(w-sz)/2, by=(h-sz)/2;
+    scanBox.style.cssText=`left:${bx}px;top:${by}px;width:${sz}px;height:${sz}px;`;
+    document.getElementById('mt').style.cssText=`top:0;left:0;right:0;height:${by}px;position:absolute;background:rgba(0,0,0,0.55)`;
+    document.getElementById('mb').style.cssText=`bottom:0;left:0;right:0;height:${by}px;position:absolute;background:rgba(0,0,0,0.55)`;
+    document.getElementById('ml').style.cssText=`top:${by}px;left:0;width:${bx}px;height:${sz}px;position:absolute;background:rgba(0,0,0,0.55)`;
+    document.getElementById('mr').style.cssText=`top:${by}px;right:0;width:${bx}px;height:${sz}px;position:absolute;background:rgba(0,0,0,0.55)`;
+  }
+
+  async function toggleCam(){ live ? stopCam() : await startCam(); }
+
+  async function startCam(){
+    document.getElementById('errmsg').style.display='none';
+    stxt.textContent='Requesting camera…'; sdot.classList.add('off');
+    try {
+      stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:1280}}});
+      video.srcObject=stream; await video.play();
+      live=true;
+      ph.style.display='none'; video.style.display='block'; overlay.style.display='block';
+      document.getElementById('bico').textContent='⛔';
+      document.getElementById('blbl').textContent='Stop Scanner';
+      sdot.classList.remove('off');
+      stxt.textContent='Scanning… point camera at QR code';
+      layout(); window.addEventListener('resize',layout);
+      ticker=setInterval(scan,250);
+    } catch(e){
+      stxt.textContent='Camera access denied';
+      sdot.classList.add('off');
+      const em=document.getElementById('errmsg');
+      em.style.display='block';
+      em.textContent='❌ Camera permission denied. Allow camera in browser settings, or use manual input below.';
+    }
+  }
+
+  function stopCam(){
+    if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}
+    if(ticker){clearInterval(ticker);ticker=null;}
+    live=false;
+    video.style.display='none'; overlay.style.display='none'; ph.style.display='flex';
+    document.getElementById('bico').textContent='📷';
+    document.getElementById('blbl').textContent='Start Scanner';
+    sdot.classList.add('off'); stxt.textContent='Camera off — tap Start to begin';
+    window.removeEventListener('resize',layout);
+  }
+
+  function scan(){
+    if(!video.videoWidth||!live)return;
+    canvas.width=video.videoWidth; canvas.height=video.videoHeight;
+    ctx.drawImage(video,0,0);
+    const d=ctx.getImageData(0,0,canvas.width,canvas.height);
+    const c=jsQR(d.data,d.width,d.height,{inversionAttempts:'dontInvert'});
+    if(c){
+      flash.classList.add('active'); setTimeout(()=>flash.classList.remove('active'),180);
+      stxt.textContent='✅ QR detected! Redirecting…';
+      stopCam();
+      const v=c.data.trim();
+      setTimeout(()=>{
+        if(v.startsWith('http')){
+          const m=v.match(/\/emergency\/([a-f0-9\-]{36})/i);
+          window.location.href=m?'/patient/emergency/'+m[1]:v;
+        } else { window.location.href='/patient/emergency/'+v; }
+      },300);
+    }
+  }
+
+  function handleManual(){
+    const v=document.getElementById('murl').value.trim();
+    const em=document.getElementById('errmsg'); em.style.display='none';
+    if(!v){em.style.display='block';em.textContent='⚠️ Please paste a URL or token.';return;}
+    if(v.startsWith('http')){
+      const m=v.match(/\/emergency\/([a-f0-9\-]{36})/i);
+      window.location.href=m?'/patient/emergency/'+m[1]:v;
+    } else { window.location.href='/patient/emergency/'+v; }
+  }
+  document.getElementById('murl').addEventListener('keydown',e=>{if(e.key==='Enter')handleManual();});
+</script>
+</body>
+</html>

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>My Health Dashboard — Medical Continuity</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    body { background:#f8fafc; }
+    /* ── PAGE HEADER ── */
+    .dash-hero {
+      background:linear-gradient(135deg,#052e16 0%,#14532d 50%,#166534 100%);
+      padding:2.5rem 0 5rem; color:white; position:relative; overflow:hidden;
+    }
+    .dash-hero::before {
+      content:''; position:absolute; inset:0; pointer-events:none;
+      background:radial-gradient(ellipse at 80% 50%,rgba(74,222,128,.07) 0%,transparent 55%),
+                 radial-gradient(ellipse at 10% 80%,rgba(0,0,0,.2) 0%,transparent 50%);
+    }
+    .hero-inner { position:relative; z-index:1; }
+    .hero-eyebrow { font-size:.7rem; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,.4); margin-bottom:.5rem; }
+    .hero-name { font-family:'DM Serif Display',serif; font-size:2.2rem; color:white; margin-bottom:.25rem; }
+    .hero-sub { font-size:.85rem; color:rgba(255,255,255,.5); }
+
+    /* ── PULL-UP CARDS ── */
+    .cards-wrap { margin-top:-3rem; position:relative; z-index:2; }
+
+    /* ── PROFILE CARD ── */
+    .profile-card {
+      background:white; border-radius:20px;
+      box-shadow:0 8px 40px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.05);
+      border:1px solid #e5e7eb; overflow:hidden;
+    }
+    .profile-top {
+      background:linear-gradient(135deg,#f0fdf4,#dcfce7);
+      padding:1.8rem 2rem; display:flex; align-items:flex-start; gap:1.5rem;
+      flex-wrap:wrap; border-bottom:1px solid #e5e7eb;
+    }
+    .profile-avatar-wrap { position:relative; flex-shrink:0; }
+    .profile-avatar {
+      width:86px; height:86px; border-radius:50%; object-fit:cover;
+      border:3px solid white; box-shadow:0 4px 16px rgba(0,0,0,.12);
+    }
+    .profile-avatar-placeholder {
+      width:86px; height:86px; border-radius:50%; background:#dcfce7;
+      border:3px solid white; box-shadow:0 4px 16px rgba(0,0,0,.12);
+      display:flex; align-items:center; justify-content:center; font-size:2rem;
+    }
+    .status-dot {
+      position:absolute; bottom:4px; right:4px;
+      width:16px; height:16px; border-radius:50%;
+      background:#4ade80; border:2.5px solid white;
+    }
+    .profile-info { flex:1; min-width:200px; }
+    .patient-name { font-family:'DM Serif Display',serif; font-size:1.7rem; color:#111827; margin-bottom:4px; }
+    .patient-meta { font-size:.84rem; color:#6b7280; margin-bottom:.75rem; }
+    .badges-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:.75rem; }
+    .bdg {
+      display:inline-flex; align-items:center; gap:5px;
+      border-radius:20px; padding:4px 12px; font-size:.75rem; font-weight:700;
+    }
+    .bdg-red    { background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; }
+    .bdg-yellow { background:#fffbeb; color:#92400e; border:1px solid #fde68a; }
+    .bdg-blue   { background:#eff6ff; color:#1e40af; border:1px solid #bfdbfe; }
+    .bdg-green  { background:#f0fdf4; color:#166534; border:1px solid #bbf7d0; }
+    .emergency-pill {
+      display:inline-flex; align-items:center; gap:8px;
+      background:#fef2f2; border:1px solid #fecaca; border-radius:10px;
+      padding:8px 14px; font-size:.83rem;
+    }
+    .profile-qr { flex-shrink:0; text-align:center; }
+    .qr-box {
+      background:white; border:1.5px solid #e5e7eb; border-radius:16px;
+      padding:12px; box-shadow:0 4px 16px rgba(0,0,0,.07); display:inline-block;
+    }
+    .qr-box img { width:100px; height:100px; display:block; }
+    .qr-label { font-size:.66rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#9ca3af; margin-top:6px; }
+    .profile-bottom { padding:1rem 2rem; display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+
+    /* ── STATS ROW ── */
+    .stat-card {
+      background:white; border:1px solid #e5e7eb; border-radius:16px;
+      padding:1.25rem 1.5rem; box-shadow:0 2px 8px rgba(0,0,0,.05);
+      display:flex; align-items:center; gap:1rem;
+    }
+    .stat-icon {
+      width:44px; height:44px; border-radius:12px; flex-shrink:0;
+      display:flex; align-items:center; justify-content:center; font-size:1.2rem;
+    }
+    .stat-icon.green { background:#f0fdf4; }
+    .stat-icon.red   { background:#fef2f2; }
+    .stat-icon.blue  { background:#eff6ff; }
+    .stat-num { font-family:'JetBrains Mono',monospace; font-size:1.6rem; font-weight:700; color:#111827; line-height:1; }
+    .stat-lbl { font-size:.74rem; color:#9ca3af; font-weight:600; margin-top:2px; }
+
+    /* ── UPLOAD SECTION ── */
+    .upload-card {
+      background:white; border:1px solid #e5e7eb; border-radius:16px;
+      padding:1.5rem; box-shadow:0 2px 8px rgba(0,0,0,.05);
+    }
+    .upload-card h6 { font-size:.88rem; font-weight:800; color:#111827; margin-bottom:.2rem; }
+    .upload-card .sub { font-size:.78rem; color:#9ca3af; margin-bottom:1.2rem; }
+
+    /* ── REPORTS GRID ── */
+    .rep-card {
+      background:white; border:1px solid #e5e7eb; border-radius:14px;
+      overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.05);
+      transition:all .2s;
+    }
+    .rep-card:hover { box-shadow:0 8px 24px rgba(0,0,0,.1); transform:translateY(-2px); }
+    .rep-thumb { width:100%; height:130px; object-fit:cover; display:block; background:#f8fafc; }
+    .rep-body { padding:.9rem 1rem; }
+    .rep-title { font-size:.86rem; font-weight:700; color:#166534; }
+    .rep-date  { font-size:.7rem; color:#9ca3af; }
+    .rep-desc  { font-size:.78rem; color:#6b7280; margin-top:3px; }
+
+    /* pdf placeholder */
+    .pdf-ph { height:130px; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#f8fafc; gap:6px; }
+    .empty-state { background:white; border:1px solid #e5e7eb; border-radius:16px; padding:3rem; text-align:center; }
+    .empty-icon { font-size:2.5rem; margin-bottom:10px; }
+    .empty-txt { font-size:.88rem; color:#9ca3af; }
+
+    /* section header */
+    .sec-hdr { display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem; }
+    .sec-hdr h5 { font-size:.95rem; font-weight:800; color:#111827; margin:0; }
+    .sec-hdr .cnt { font-size:.78rem; font-weight:600; color:#9ca3af; background:#f3f4f6; border-radius:20px; padding:2px 10px; }
+  </style>
+</head>
+<body>
+<%- include('../partials/navbar') %>
+
+<!-- HERO -->
+<div class="dash-hero">
+  <div class="container hero-inner">
+    <div class="hero-eyebrow">Patient Dashboard</div>
+    <h1 class="hero-name">Welcome, <%= patient.name.split(' ')[0] %></h1>
+    <p class="hero-sub">Your health records are secure and always ready.</p>
+  </div>
+</div>
+
+<div class="container pb-5 cards-wrap">
+
+  <!-- PROFILE CARD -->
+  <div class="profile-card mb-4">
+    <div class="profile-top">
+      <!-- Avatar -->
+      <div class="profile-avatar-wrap">
+        <% if(patient.photo){ %>
+          <img src="<%= BASE_URL %><%= patient.photo %>" class="profile-avatar"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="profile-avatar-placeholder" style="display:none">👤</div>
+        <% } else { %>
+          <div class="profile-avatar-placeholder">👤</div>
+        <% } %>
+        <div class="status-dot"></div>
+      </div>
+
+      <!-- Info -->
+      <div class="profile-info">
+        <h2 class="patient-name"><%= patient.name %></h2>
+        <p class="patient-meta">
+          📞 <%= patient.phone %>
+          <% if(patient.gender){ %> &nbsp;·&nbsp; <%= patient.gender %><% } %>
+          <% if(patient.dateOfBirth){ %> &nbsp;·&nbsp; DOB: <%= patient.dateOfBirth %><% } %>
+          <% if(patient.address){ %> &nbsp;·&nbsp; 📍 <%= patient.address %><% } %>
+        </p>
+        <div class="badges-row">
+          <% if(patient.bloodGroup){    %><span class="bdg bdg-red">🩸 <%= patient.bloodGroup %></span><% } %>
+          <% if(patient.allergies){     %><span class="bdg bdg-yellow">⚠️ <%= patient.allergies %></span><% } %>
+          <% if(patient.chronicDiseases){%><span class="bdg bdg-blue">🏥 <%= patient.chronicDiseases %></span><% } %>
+          <span class="bdg bdg-green">✓ Health ID Active</span>
+        </div>
+        <div class="emergency-pill">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a2 2 0 012-2.18h3.09"/></svg>
+          <span style="font-size:.8rem;font-weight:700;color:#111827">Emergency:</span>
+          <span style="font-size:.82rem;color:#374151"><%= patient.emergencyName %></span>
+          <span style="color:#9ca3af;font-size:.78rem"><%= patient.emergencyRelation ? '('+patient.emergencyRelation+')' : '' %></span>
+          <a href="tel:<%= patient.emergencyContact %>" style="color:#dc2626;font-weight:800;font-size:.85rem;text-decoration:none"><%= patient.emergencyContact %></a>
+        </div>
+      </div>
+
+      <!-- QR -->
+      <div class="profile-qr">
+        <% if(patient.qrCode){ %>
+          <div class="qr-box">
+            <img src="<%= BASE_URL %><%= patient.qrCode %>" onerror="this.style.display='none'">
+          </div>
+          <div class="qr-label">Scan for Emergency</div>
+          <a href="<%= BASE_URL %><%= patient.qrCode %>" download="health-qr.png"
+             style="display:inline-flex;align-items:center;gap:5px;font-size:.74rem;color:#16a34a;font-weight:700;text-decoration:none;margin-top:4px">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download QR
+          </a>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- Bottom actions -->
+    <div class="profile-bottom">
+      <a href="/" class="btn btn-outline-primary btn-sm">🏠 Home</a>
+      <a href="/patient/update/<%= patient.phone %>" class="btn btn-sm" style="background:#f0fdf4;color:#166534;border:1px solid #bbf7d0;font-weight:700">✏️ Update Medical Details</a>
+      <a href="/patient/register" class="btn btn-sm" style="background:#f9fafb;color:#374151;border:1px solid #e5e7eb;font-weight:700">Register New ID</a>
+    </div>
+  </div>
+
+  <!-- STATS ROW -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="stat-card">
+        <div class="stat-icon green">📋</div>
+        <div>
+          <div class="stat-num"><%= patient.reports ? patient.reports.length : 0 %></div>
+          <div class="stat-lbl">Total Reports</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stat-card">
+        <div class="stat-icon red">💊</div>
+        <div>
+          <div class="stat-num"><%= patient.medicines ? patient.medicines.filter(m=>m.name).length : 0 %></div>
+          <div class="stat-lbl">Active Medicines</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stat-card">
+        <div class="stat-icon blue">🏥</div>
+        <div>
+          <div class="stat-num"><%= patient.medicalHistory ? patient.medicalHistory.filter(h=>h.date||h.diagnosis).length : 0 %></div>
+          <div class="stat-lbl">Past Treatments</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- UPLOAD PANEL -->
+    <div class="col-lg-4">
+      <div class="upload-card">
+        <h6>Upload New Report</h6>
+        <p class="sub">Add scan reports, prescriptions or lab results</p>
+        <% if(error){   %><div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:.65rem .9rem;font-size:.82rem;color:#b91c1c;margin-bottom:1rem"><%= error %></div><% } %>
+        <% if(success){ %><div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:.65rem .9rem;font-size:.82rem;color:#166534;margin-bottom:1rem">✅ <%= success %></div><% } %>
+        <form method="POST" action="/patient/upload-report/<%= patient.phone %>" enctype="multipart/form-data">
+          <div class="mb-3">
+            <label class="form-label" style="font-size:.78rem;font-weight:700">Report Title</label>
+            <input type="text" name="title" class="form-control" placeholder="Blood Test / X-Ray / MRI..." required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" style="font-size:.78rem;font-weight:700">Note <span style="font-weight:400;color:#9ca3af">(optional)</span></label>
+            <input type="text" name="description" class="form-control" placeholder="Short description...">
+          </div>
+          <div class="mb-3">
+            <label class="form-label" style="font-size:.78rem;font-weight:700">File</label>
+            <input type="file" name="reportFile" class="form-control" accept="image/*,.pdf" required>
+          </div>
+          <button type="submit" class="btn btn-primary w-100" style="font-size:.88rem">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="margin-right:6px;margin-top:-2px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Upload Report
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- REPORTS GRID -->
+    <div class="col-lg-8">
+      <div class="sec-hdr">
+        <h5>My Reports</h5>
+        <span class="cnt"><%= patient.reports ? patient.reports.length : 0 %> total</span>
+      </div>
+      <% if(!patient.reports || patient.reports.length === 0){ %>
+        <div class="empty-state">
+          <div class="empty-icon">📂</div>
+          <p class="empty-txt">No reports yet. Upload your first report using the form.</p>
+        </div>
+      <% } else { %>
+        <div class="row g-3">
+          <% patient.reports.slice().reverse().forEach(r => { %>
+          <div class="col-sm-6">
+            <div class="rep-card">
+              <% if(r.fileUrl){ %>
+                <a href="<%= BASE_URL %><%= r.fileUrl %>" target="_blank">
+                  <img src="<%= BASE_URL %><%= r.fileUrl %>" class="rep-thumb"
+                       onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                  <div class="pdf-ph" style="display:none">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    <span style="font-size:.72rem;color:#9ca3af;font-weight:600">View PDF</span>
+                  </div>
+                </a>
+              <% } %>
+              <div class="rep-body">
+                <div class="d-flex justify-content-between align-items-start">
+                  <span class="rep-title"><%= r.title %></span>
+                  <span class="rep-date"><%= new Date(r.uploadedAt).toLocaleDateString('en-IN') %></span>
+                </div>
+                <% if(r.description){ %><p class="rep-desc"><%= r.description %></p><% } %>
+              </div>
+            </div>
+          </div>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

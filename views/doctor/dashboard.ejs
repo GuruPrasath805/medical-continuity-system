@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Doctor Dashboard — Medical Continuity</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .doctor-hero {
+      background: linear-gradient(140deg,#052e16,#166534);
+      padding: 2.5rem 0 4.5rem; color: white;
+    }
+    .access-card {
+      background: white; border-radius: var(--radius-lg);
+      padding: 2.5rem; box-shadow: var(--shadow-md);
+      border: 1px solid var(--border);
+      max-width: 560px; width: 100%;
+      position: relative; z-index: 1;
+      margin-top: -2.5rem;
+    }
+  </style>
+</head>
+<body>
+<%- include('../partials/navbar') %>
+
+<div class="doctor-hero">
+  <div class="container">
+    <div class="d-flex align-items-center gap-3">
+      <div style="width:52px;height:52px;background:rgba(255,255,255,0.12);border-radius:14px;display:flex;align-items:center;justify-content:center">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div>
+        <p style="font-size:0.75rem;text-transform:uppercase;letter-spacing:2px;opacity:0.5;margin-bottom:2px">Doctor Portal</p>
+        <h3 style="font-family:'DM Serif Display',serif;color:white;margin:0;font-size:1.6rem">Dr. <%= doctorName %></h3>
+      </div>
+      <span class="badge-green ms-auto" style="background:rgba(255,255,255,0.15);color:#86efac">Verified</span>
+    </div>
+  </div>
+</div>
+
+<div class="container py-4 pb-5">
+  <div class="access-card mx-auto">
+    <h5 style="margin-bottom:0.3rem">Access Patient Records</h5>
+    <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1.8rem">Enter the patient's registered phone number. An OTP will be generated for verification before you can view their records.</p>
+
+    <% if (error)   { %><div class="alert-danger mb-3"><%= error %></div><% } %>
+    <% if (message) { %><div class="alert-success mb-3"><%= message %></div><% } %>
+
+    <form method="POST" action="/doctor/request-otp">
+      <label class="form-label">Patient's Phone Number</label>
+      <div class="d-flex gap-2 mb-4">
+        <input type="text" name="phone" class="form-control" placeholder="+91 9876543210 or 9876543210" required style="flex:1">
+        <button type="submit" class="btn btn-primary" style="white-space:nowrap;padding:0.62rem 1.4rem">Request OTP</button>
+      </div>
+    </form>
+
+    <div style="background:var(--green-light);border-radius:var(--radius-sm);padding:1rem 1.2rem;border:1px solid var(--green-border)">
+      <p style="font-size:0.8rem;color:var(--green-mid);margin:0;line-height:1.6">
+        <strong>How it works:</strong> An OTP will be displayed on the patient's registration page. Enter it on the next screen to gain access to their full medical records.
+      </p>
+    </div>
+
+    <div style="border-top:1px solid var(--border);margin-top:1.8rem;padding-top:1.2rem">
+      <a href="/logout" class="btn btn-outline-primary w-100">Sign Out</a>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

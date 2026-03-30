@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Emergency Info – <%= patient.name %></title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,400;9..40,600;9..40,700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      background:linear-gradient(160deg,#7f1d1d 0%,#991b1b 40%,#b91c1c 100%);
+      min-height:100vh;display:flex;align-items:center;justify-content:center;
+      font-family:'DM Sans',sans-serif;padding:1.5rem;
+      position:relative;overflow:hidden;
+    }
+    body::before{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(ellipse at 20% 80%,rgba(0,0,0,0.3) 0%,transparent 60%),
+                 radial-gradient(ellipse at 80% 20%,rgba(220,38,38,0.4) 0%,transparent 50%);
+      pointer-events:none;
+    }
+    .card{
+      background:white;border-radius:28px;
+      padding:0;max-width:390px;width:100%;
+      box-shadow:0 40px 100px rgba(0,0,0,0.35),0 12px 32px rgba(0,0,0,0.15);
+      position:relative;z-index:1;overflow:hidden;
+    }
+    .card-top{
+      background:linear-gradient(135deg,#dc2626,#b91c1c);
+      padding:1.6rem 1.8rem 1.4rem;
+      display:flex;align-items:center;gap:1rem;
+    }
+    .photo{
+      width:68px;height:68px;border-radius:50%;
+      object-fit:cover;border:3px solid rgba(255,255,255,0.4);
+      flex-shrink:0;
+    }
+    .photo-placeholder{
+      width:68px;height:68px;border-radius:50%;
+      background:rgba(255,255,255,0.15);border:3px solid rgba(255,255,255,0.3);
+      display:flex;align-items:center;justify-content:center;
+      font-size:1.8rem;flex-shrink:0;
+    }
+    .top-name{
+      font-family:'DM Serif Display',serif;font-size:1.5rem;
+      color:white;line-height:1.1;margin-bottom:4px;
+    }
+    .top-sub{color:rgba(255,255,255,0.7);font-size:0.8rem;}
+    .badge-pill{
+      display:inline-block;background:rgba(255,255,255,0.18);
+      border:1px solid rgba(255,255,255,0.3);
+      color:white;border-radius:50px;
+      padding:3px 12px;font-size:0.72rem;font-weight:700;
+      letter-spacing:0.5px;margin-top:5px;
+    }
+    .card-body{padding:1.6rem 1.8rem;}
+    .blood-block{
+      background:#fef2f2;border-radius:14px;
+      padding:1rem 1.2rem;margin-bottom:1.4rem;
+      display:flex;align-items:center;justify-content:space-between;
+    }
+    .blood-label{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#9ca3af;}
+    .blood-value{
+      font-family:'DM Serif Display',serif;font-size:2.4rem;
+      color:#dc2626;line-height:1;font-style:italic;
+    }
+    .section-eyebrow{
+      font-size:0.68rem;font-weight:700;text-transform:uppercase;
+      letter-spacing:1.5px;color:#9ca3af;margin-bottom:8px;
+      display:flex;align-items:center;gap:8px;
+    }
+    .section-eyebrow::after{content:'';flex:1;height:1px;background:#f3f4f6;}
+    .contact-name{
+      font-family:'DM Serif Display',serif;
+      font-size:1.5rem;color:#111827;margin-bottom:2px;
+    }
+    .contact-rel{font-size:0.82rem;color:#6b7280;margin-bottom:0.75rem;}
+    .phone-num{
+      font-family:'JetBrains Mono',monospace;
+      font-size:2rem;font-weight:600;
+      color:#dc2626;letter-spacing:-1px;
+      margin-bottom:1rem;line-height:1;
+    }
+    .call-btn{
+      display:block;
+      background:linear-gradient(135deg,#dc2626,#b91c1c);
+      color:white;border-radius:14px;padding:1rem;
+      font-weight:700;font-size:1rem;text-decoration:none;
+      text-align:center;
+      box-shadow:0 6px 20px rgba(220,38,38,0.35);
+      transition:transform 0.15s,box-shadow 0.15s;
+    }
+    .call-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(220,38,38,0.45);color:white;}
+    .card-foot{
+      margin:1.2rem 0 0;
+      border-top:1px solid #f3f4f6;padding-top:1rem;
+    }
+    .foot-note{font-size:0.74rem;color:#9ca3af;text-align:center;line-height:1.6;margin-bottom:0.8rem;}
+    .doctor-link{
+      display:flex;align-items:center;justify-content:center;gap:8px;
+      background:#f9fafb;border:1px solid #e5e7eb;
+      border-radius:10px;padding:0.6rem;
+      font-size:0.82rem;color:#374151;text-decoration:none;font-weight:600;
+      transition:all 0.15s;
+    }
+    .doctor-link:hover{background:var(--green-light,#f0fdf4);color:#166534;border-color:#bbf7d0;}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <!-- Top: photo + name -->
+    <div class="card-top">
+      <% if (patient.photo) { %>
+        <img src="<%= BASE_URL %><%= patient.photo %>" class="photo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="photo-placeholder" style="display:none">👤</div>
+      <% } else { %>
+        <div class="photo-placeholder">👤</div>
+      <% } %>
+      <div>
+        <div class="top-name"><%= patient.name %></div>
+        <% if (patient.gender || patient.dateOfBirth) { %>
+          <div class="top-sub"><%= patient.gender || '' %><%= patient.gender && patient.dateOfBirth ? ' · ' : '' %><%= patient.dateOfBirth ? 'DOB: ' + patient.dateOfBirth : '' %></div>
+        <% } %>
+        <span class="badge-pill">🆘 EMERGENCY</span>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <!-- Blood Group -->
+      <% if (patient.bloodGroup) { %>
+      <div class="blood-block">
+        <div>
+          <div class="blood-label">🩸 Blood Group</div>
+          <div class="blood-value"><%= patient.bloodGroup %></div>
+        </div>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fca5a5" stroke-width="1.5" stroke-linecap="round"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg>
+      </div>
+      <% } %>
+
+      <!-- Emergency Contact -->
+      <div class="section-eyebrow">Emergency Contact</div>
+      <div class="contact-name"><%= patient.emergencyName %></div>
+      <% if (patient.emergencyRelation) { %><div class="contact-rel"><%= patient.emergencyRelation %></div><% } %>
+      <div class="phone-num"><%= patient.emergencyContact %></div>
+
+      <a href="tel:<%= patient.emergencyContact %>" class="call-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="white" style="margin-right:8px;margin-top:-2px"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a2 2 0 012-2.18H8.1a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L9.91 14a16 16 0 006 6l.44-.44a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+        Call Now
+      </a>
+
+      <div class="card-foot">
+        <p class="foot-note">🔒 Full medical records are protected. Doctors must login and verify with OTP to view records.</p>
+        <a href="/doctor/login" class="doctor-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Doctor? Login to view full records
+        </a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
