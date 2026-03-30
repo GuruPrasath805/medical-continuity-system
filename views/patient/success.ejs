@@ -1,213 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Health ID Created — Medical Continuity</title>
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
+
   <style>
     body { background:#f8fafc; }
     .success-wrap { min-height:calc(100vh - 64px); display:flex; align-items:flex-start; justify-content:center; padding:3rem 1rem; }
     .success-inner { width:100%; max-width:720px; }
 
-    /* top banner */
-    .top-banner {
-      background:linear-gradient(135deg,#052e16,#166534);
-      border-radius:24px; padding:2.5rem 2.5rem 4rem;
-      margin-bottom:-2rem; position:relative; overflow:hidden;
-    }
-    .top-banner::before {
-      content:''; position:absolute; top:-40px; right:-40px;
-      width:200px; height:200px; border-radius:50%;
-      background:radial-gradient(circle,rgba(74,222,128,.12) 0%,transparent 70%);
-      pointer-events:none;
-    }
-    .banner-inner { position:relative; z-index:1; display:flex; align-items:flex-start; gap:1.5rem; flex-wrap:wrap; }
-    .check-circle {
-      width:52px; height:52px; border-radius:50%;
-      background:rgba(74,222,128,.2); border:2px solid rgba(74,222,128,.4);
-      display:flex; align-items:center; justify-content:center; flex-shrink:0;
-    }
-    .banner-title { font-family:'DM Serif Display',serif; font-size:1.9rem; color:white; margin-bottom:.35rem; }
-    .banner-sub { font-size:.88rem; color:rgba(255,255,255,.55); line-height:1.6; }
-
-    /* health ID card */
     .hid-card {
       background:white; border:1px solid #e5e7eb; border-radius:20px;
-      padding:2rem; box-shadow:0 8px 40px rgba(0,0,0,.09),0 2px 8px rgba(0,0,0,.04);
-      position:relative; z-index:1; margin-bottom:1.5rem;
+      padding:2rem; box-shadow:0 8px 40px rgba(0,0,0,.09);
     }
-    .hid-header {
-      display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:1.5rem;
-    }
-    .hid-brand { font-size:.65rem; letter-spacing:2px; text-transform:uppercase; color:#9ca3af; }
-    .hid-type  { font-size:.7rem; font-family:'JetBrains Mono',monospace; color:#c4c9d4; }
-    .hid-status {
-      background:#f0fdf4; border:1px solid #bbf7d0; border-radius:6px;
-      padding:3px 12px; font-size:.72rem; font-weight:800; color:#166534;
-      letter-spacing:1px; text-transform:uppercase;
-    }
-    .hid-body { display:flex; align-items:flex-end; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
-    .hid-left { flex:1; min-width:200px; }
+
+    .hid-body { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:20px; }
+
     .hid-photo {
-      width:60px; height:60px; border-radius:50%; object-fit:cover;
-      border:2px solid #e5e7eb; margin-bottom:.75rem;
+      width:80px; height:80px; border-radius:50%;
+      object-fit:cover; border:2px solid #e5e7eb;
     }
+
     .hid-photo-ph {
-      width:60px; height:60px; border-radius:50%; background:#f3f4f6;
-      border:2px solid #e5e7eb; margin-bottom:.75rem;
-      display:flex; align-items:center; justify-content:center; font-size:1.4rem;
+      width:80px; height:80px; border-radius:50%;
+      background:#f3f4f6; display:flex; align-items:center; justify-content:center;
+      font-size:1.5rem;
     }
-    .hid-name { font-family:'DM Serif Display',serif; font-size:1.5rem; color:#111827; margin-bottom:.5rem; }
-    .hid-fields { display:flex; gap:1.5rem; flex-wrap:wrap; }
-    .hid-field .lbl { font-size:.6rem; text-transform:uppercase; letter-spacing:1px; color:#9ca3af; margin-bottom:2px; }
-    .hid-field .val { font-size:.9rem; font-weight:700; color:#111827; }
-    .hid-field .val.blood { color:#dc2626; }
-    .hid-qr { flex-shrink:0; text-align:center; }
-    .hid-qr-box { background:#f8fafc; border:1.5px solid #e5e7eb; border-radius:12px; padding:10px; display:inline-block; }
-    .hid-qr-box img { width:96px; height:96px; display:block; }
-    .hid-qr-lbl { font-size:.6rem; text-transform:uppercase; letter-spacing:1px; color:#9ca3af; margin-top:6px; }
 
-    /* emergency strip */
-    .emergency-strip {
-      background:#fef2f2; border:1.5px solid #fecaca; border-radius:12px;
-      padding:.85rem 1.2rem; margin-top:1.5rem;
-      display:flex; align-items:center; gap:1.2rem; flex-wrap:wrap;
+    .hid-name { font-size:1.5rem; font-weight:bold; margin-top:10px; }
+
+    .hid-qr-box {
+      background:#f8fafc;
+      border:1.5px solid #e5e7eb;
+      border-radius:12px;
+      padding:10px;
     }
-    .emg-icon { font-size:1.2rem; flex-shrink:0; }
-    .emg-info { flex:1; min-width:150px; }
-    .emg-label { font-size:.65rem; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:#9ca3af; margin-bottom:2px; }
-    .emg-name  { font-size:.9rem; font-weight:700; color:#111827; }
-    .emg-phone { font-family:'JetBrains Mono',monospace; font-size:.95rem; font-weight:600; color:#dc2626; }
 
-    /* action buttons */
-    .action-row { display:grid; grid-template-columns:repeat(3,1fr); gap:.75rem; margin-bottom:1.5rem; }
-    @media(max-width:500px){ .action-row{ grid-template-columns:1fr; } }
+    .hid-qr-box img {
+      width:120px;
+      height:120px;
+    }
+
     .act-btn {
-      display:flex; align-items:center; justify-content:center; gap:7px;
-      padding:.7rem 1rem; border-radius:12px; font-size:.84rem; font-weight:700;
-      text-decoration:none; border:1.5px solid transparent; transition:all .18s; cursor:pointer;
+      display:inline-block;
+      padding:10px 20px;
+      background:#16a34a;
+      color:white;
+      border-radius:10px;
+      text-decoration:none;
+      font-weight:bold;
+      margin-top:20px;
     }
-    .act-btn.primary { background:#16a34a; color:white; box-shadow:0 4px 14px rgba(22,163,74,.28); border-color:#16a34a; }
-    .act-btn.primary:hover { background:#15803d; transform:translateY(-1px); color:white; }
-    .act-btn.outline { background:white; color:#374151; border-color:#e5e7eb; }
-    .act-btn.outline:hover { border-color:#d1d5db; background:#f9fafb; }
-    .act-btn.ghost  { background:#f8fafc; color:#6b7280; border-color:#e5e7eb; }
-    .act-btn.ghost:hover  { background:#f3f4f6; }
-
-    /* tips */
-    .tips-box {
-      background:white; border:1px solid #e5e7eb; border-radius:16px; padding:1.5rem;
-      box-shadow:0 2px 8px rgba(0,0,0,.04);
-    }
-    .tips-title { font-size:.72rem; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:#166534; margin-bottom:1rem; display:flex; align-items:center; gap:8px; }
-    .tip-item { display:flex; align-items:flex-start; gap:10px; margin-bottom:.8rem; }
-    .tip-item:last-child { margin-bottom:0; }
-    .tip-num { width:22px; height:22px; border-radius:50%; background:#f0fdf4; color:#166534; font-size:.7rem; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
-    .tip-txt { font-size:.84rem; color:#374151; line-height:1.6; }
   </style>
 </head>
+
 <body>
+
 <%- include('../partials/navbar') %>
 
 <div class="success-wrap">
   <div class="success-inner">
 
-    <!-- TOP BANNER -->
-    <div class="top-banner">
-      <div class="banner-inner">
-        <div class="check-circle">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-        </div>
-        <div>
-          <h2 class="banner-title">Health ID Created Successfully!</h2>
-          <p class="banner-sub">Your QR code is ready and your medical records are now securely stored. Keep the QR accessible for emergencies.</p>
-        </div>
-      </div>
-    </div>
+    <h2 style="margin-bottom:20px;">✅ Health ID Created Successfully</h2>
 
-    <!-- HEALTH ID CARD -->
     <div class="hid-card">
-      <div class="hid-header">
-        <div>
-          <div class="hid-brand">Medical Continuity</div>
-          <div class="hid-type">HEALTH ID CARD</div>
-        </div>
-        <div class="hid-status">Active</div>
-      </div>
 
       <div class="hid-body">
-        <div class="hid-left">
-          <% if(patient.photo){ %>
-            <img src="<%= BASE_URL %><%= patient.photo %>" class="hid-photo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+
+        <!-- LEFT SIDE -->
+        <div>
+
+          <!-- PHOTO FIX -->
+          <% if (patient.photo) { %>
+            <img src="<%= patient.photo %>" class="hid-photo" alt="Photo"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
             <div class="hid-photo-ph" style="display:none">👤</div>
           <% } else { %>
             <div class="hid-photo-ph">👤</div>
           <% } %>
+
           <div class="hid-name"><%= patient.name %></div>
-          <div class="hid-fields">
-            <% if(patient.bloodGroup){ %><div class="hid-field"><div class="lbl">Blood Group</div><div class="val blood"><%= patient.bloodGroup %></div></div><% } %>
-            <% if(patient.dateOfBirth){ %><div class="hid-field"><div class="lbl">Date of Birth</div><div class="val"><%= patient.dateOfBirth %></div></div><% } %>
-            <% if(patient.gender){ %><div class="hid-field"><div class="lbl">Gender</div><div class="val"><%= patient.gender %></div></div><% } %>
-            <% if(patient.phone){ %><div class="hid-field"><div class="lbl">Phone</div><div class="val"><%= patient.phone %></div></div><% } %>
-          </div>
+
+          <p><strong>Phone:</strong> <%= patient.phone %></p>
+          <p><strong>Blood Group:</strong> <%= patient.bloodGroup || '-' %></p>
+
         </div>
 
-        <% if(patient.qrCode){ %>
-        <div class="hid-qr">
-          <div class="hid-qr-box">
-            <img src="<%= BASE_URL %><%= patient.qrCode %>" onerror="this.style.display='none'">
-          </div>
-          <div class="hid-qr-lbl">Scan for Emergency</div>
+        <!-- RIGHT SIDE QR FIX -->
+        <% if (patient.qrCode) { %>
+        <div class="hid-qr-box">
+          <img src="<%= patient.qrCode %>" alt="QR Code"
+               onerror="this.style.display='none'; this.parentElement.innerHTML='QR not found';">
         </div>
         <% } %>
+
       </div>
 
-      <!-- Emergency strip -->
-      <div class="emergency-strip">
-        <div class="emg-icon">🆘</div>
-        <div class="emg-info">
-          <div class="emg-label">Emergency Contact</div>
-          <div class="emg-name"><%= patient.emergencyName %> <% if(patient.emergencyRelation){ %><span style="font-weight:400;font-size:.82rem;color:#9ca3af">(<%= patient.emergencyRelation %>)</span><% } %></div>
-        </div>
-        <div class="emg-phone"><%= patient.emergencyContact %></div>
-      </div>
-    </div>
-
-    <!-- ACTIONS -->
-    <div class="action-row mb-4">
-      <% if(patient.qrCode){ %>
-      <a href="<%= BASE_URL %><%= patient.qrCode %>" download="health-qr-<%= patient.name.replace(/ /g,'_') %>.png" class="act-btn primary">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Download QR
-      </a>
+      <!-- DOWNLOAD BUTTON FIX -->
+      <% if (patient.qrCode) { %>
+        <a href="<%= patient.qrCode %>" download class="act-btn">
+          Download QR
+        </a>
       <% } %>
-      <a href="/patient/dashboard/<%= patient.phone %>" class="act-btn outline">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-        My Dashboard
-      </a>
-      <a href="/" class="act-btn ghost">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
-        Home
-      </a>
-    </div>
 
-    <!-- TIPS -->
-    <div class="tips-box">
-      <div class="tips-title">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#166534" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        What to do next
-      </div>
-      <div class="tip-item"><div class="tip-num">1</div><div class="tip-txt">Download your QR code and print it on a wallet-sized card or save it on your phone's home screen.</div></div>
-      <div class="tip-item"><div class="tip-num">2</div><div class="tip-txt">In an emergency, anyone who scans the QR sees your blood group and emergency contact immediately.</div></div>
-      <div class="tip-item"><div class="tip-num">3</div><div class="tip-txt">Doctors can request your full medical records — an OTP is sent to your emergency contact for approval.</div></div>
-      <div class="tip-item"><div class="tip-num">4</div><div class="tip-txt">Visit your dashboard anytime to upload new reports, prescriptions, or lab results.</div></div>
     </div>
 
   </div>
 </div>
 
 <%- include('../partials/footer') %>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
