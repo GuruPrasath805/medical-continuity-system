@@ -53,3 +53,4 @@ async function sendDoctorApprovalEmail(doctorEmail, doctorName) {
 }
 
 module.exports = { sendDoctorApprovalEmail };
+

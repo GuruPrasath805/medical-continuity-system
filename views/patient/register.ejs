@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Create Health ID — Medical Continuity</title>
+  <title>Create Health ID - Medical Continuity</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
   <style>
@@ -147,7 +147,7 @@
 <div class="reg-wrap">
   <!-- SIDEBAR -->
   <aside class="reg-sidebar">
-    <div class="sb-brand"><i>🏥</i> Medical Continuity</div>
+    <div class="sb-brand"><i></i> Medical Continuity</div>
     <div class="v-steps">
       <div class="v-step">
         <div class="v-left"><div class="v-circle active" id="vc-1">1</div><div class="v-line" id="vl-1"></div></div>
@@ -166,12 +166,12 @@
         <div class="v-body" style="padding-bottom:0"><div class="v-title" id="vt-4">Reports</div><div class="v-desc">Upload documents</div></div>
       </div>
     </div>
-    <div class="sb-note"><p>🔒 Your data is encrypted and shared with doctors only via OTP consent.</p></div>
+    <div class="sb-note"><p> Your data is encrypted and shared with doctors only via OTP consent.</p></div>
   </aside>
 
   <!-- CONTENT -->
   <main class="reg-content">
-    <% if (error) { %><div class="err-box">⚠️ <%= error %></div><% } %>
+    <% if (error) { %><div class="err-box"> <%= error %></div><% } %>
     <form method="POST" action="/patient/register" enctype="multipart/form-data" id="reg-form">
 
       <!-- STEP 1 -->
@@ -192,7 +192,7 @@
             <div class="photo-box">
               <input type="file" name="photo" accept="image/*" onchange="previewPhoto(this)">
               <div id="prev-wrap" style="display:none;margin-bottom:8px"><img id="prev-img" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid #16a34a"></div>
-              <div id="ph-icon" style="font-size:1.8rem">📷</div>
+              <div id="ph-icon" style="font-size:1.8rem"></div>
               <div style="font-size:.78rem;font-weight:600;color:#111827" id="ph-lbl">Click to upload</div>
               <div style="font-size:.7rem;color:#9ca3af">JPG or PNG, max 5MB</div>
             </div>
@@ -217,7 +217,7 @@
           <div class="col-md-6"><label class="form-label">Allergies <span class="hint">(optional)</span></label><input type="text" name="allergies" class="form-control" placeholder="Penicillin, Dust, Pollen..."></div>
           <div class="col-md-6"><label class="form-label">Chronic Diseases <span class="hint">(optional)</span></label><input type="text" name="chronicDiseases" class="form-control" placeholder="Diabetes, Hypertension..."></div>
         </div>
-        <div class="info-box">🔒 <strong>Privacy note:</strong> Only emergency contact name and blood group are shown when your QR is scanned publicly. Full records require doctor login + OTP.</div>
+        <div class="info-box"> <strong>Privacy note:</strong> Only emergency contact name and blood group are shown when your QR is scanned publicly. Full records require doctor login + OTP.</div>
         <div class="fnav">
           <button type="button" class="btn-back" onclick="prevStep()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg> Back</button>
           <button type="button" class="btn-next" onclick="nextStep()">Continue to Medical History <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></button>
@@ -231,12 +231,12 @@
         <p class="ch2-sub">Add current medicines and past treatments. Skip if not applicable.</p>
         <div class="s-title">Current Medicines</div>
         <div id="medicineContainer">
-          <div class="drow"><button type="button" class="dbtn" onclick="removeRow(this)">✕</button><div class="row g-2"><div class="col-md-3"><label class="form-label">Medicine</label><input type="text" name="medicineName[]" class="form-control" placeholder="Name"></div><div class="col-md-3"><label class="form-label">Dosage</label><input type="text" name="medicineDosage[]" class="form-control" placeholder="500mg"></div><div class="col-md-3"><label class="form-label">Duration</label><input type="text" name="medicineDuration[]" class="form-control" placeholder="3 months"></div><div class="col-md-3"><label class="form-label">Reason</label><input type="text" name="medicineReason[]" class="form-control" placeholder="For..."></div></div></div>
+          <div class="drow"><button type="button" class="dbtn" onclick="removeRow(this)"></button><div class="row g-2"><div class="col-md-3"><label class="form-label">Medicine</label><input type="text" name="medicineName[]" class="form-control" placeholder="Name"></div><div class="col-md-3"><label class="form-label">Dosage</label><input type="text" name="medicineDosage[]" class="form-control" placeholder="500mg"></div><div class="col-md-3"><label class="form-label">Duration</label><input type="text" name="medicineDuration[]" class="form-control" placeholder="3 months"></div><div class="col-md-3"><label class="form-label">Reason</label><input type="text" name="medicineReason[]" class="form-control" placeholder="For..."></div></div></div>
         </div>
         <button type="button" class="add-btn" onclick="addMedicine()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Medicine</button>
         <div class="s-title" style="margin-top:2rem">Past Treatments</div>
         <div id="historyContainer">
-          <div class="drow"><button type="button" class="dbtn" onclick="removeRow(this)">✕</button><div class="row g-2"><div class="col-md-2"><label class="form-label">Date</label><input type="date" name="historyDate[]" class="form-control"></div><div class="col-md-3"><label class="form-label">Hospital</label><input type="text" name="historyHospital[]" class="form-control" placeholder="Hospital name"></div><div class="col-md-3"><label class="form-label">Diagnosis</label><input type="text" name="historyDiagnosis[]" class="form-control" placeholder="Condition"></div><div class="col-md-2"><label class="form-label">Treatment</label><input type="text" name="historyTreatment[]" class="form-control" placeholder="Treatment"></div><div class="col-md-2"><label class="form-label">Doctor</label><input type="text" name="historyDoctor[]" class="form-control" placeholder="Dr. name"></div></div></div>
+          <div class="drow"><button type="button" class="dbtn" onclick="removeRow(this)"></button><div class="row g-2"><div class="col-md-2"><label class="form-label">Date</label><input type="date" name="historyDate[]" class="form-control"></div><div class="col-md-3"><label class="form-label">Hospital</label><input type="text" name="historyHospital[]" class="form-control" placeholder="Hospital name"></div><div class="col-md-3"><label class="form-label">Diagnosis</label><input type="text" name="historyDiagnosis[]" class="form-control" placeholder="Condition"></div><div class="col-md-2"><label class="form-label">Treatment</label><input type="text" name="historyTreatment[]" class="form-control" placeholder="Treatment"></div><div class="col-md-2"><label class="form-label">Doctor</label><input type="text" name="historyDoctor[]" class="form-control" placeholder="Dr. name"></div></div></div>
         </div>
         <button type="button" class="add-btn" onclick="addHistory()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Treatment</button>
         <div class="fnav">
@@ -247,20 +247,20 @@
 
       <!-- STEP 4 -->
       <div class="form-step" id="step-4">
-        <div class="step-badge">Step 4 of 4 — Final Step</div>
+        <div class="step-badge">Step 4 of 4 - Final Step</div>
         <h2 class="ch2">Upload Reports</h2>
         <p class="ch2-sub">Upload existing reports, prescriptions or lab results. You can add more later from your dashboard.</p>
         <div id="reportContainer">
-          <div class="drow"><button type="button" class="dbtn" onclick="removeRow(this)">✕</button><div class="row g-2"><div class="col-md-4"><label class="form-label">Title</label><input type="text" name="reportTitle[]" class="form-control" placeholder="e.g. Blood Test Report"></div><div class="col-md-4"><label class="form-label">Note <span class="hint">(optional)</span></label><input type="text" name="reportDescription[]" class="form-control" placeholder="Brief description"></div><div class="col-md-4"><label class="form-label">File <span class="hint">(image or PDF)</span></label><input type="file" name="reportFiles" class="form-control" accept="image/*,.pdf"></div></div></div>
+          <div class="drow"><button type="button" class="dbtn" onclick="removeRow(this)"></button><div class="row g-2"><div class="col-md-4"><label class="form-label">Title</label><input type="text" name="reportTitle[]" class="form-control" placeholder="e.g. Blood Test Report"></div><div class="col-md-4"><label class="form-label">Note <span class="hint">(optional)</span></label><input type="text" name="reportDescription[]" class="form-control" placeholder="Brief description"></div><div class="col-md-4"><label class="form-label">File <span class="hint">(image or PDF)</span></label><input type="file" name="reportFiles" class="form-control" accept="image/*,.pdf"></div></div></div>
         </div>
         <button type="button" class="add-btn" onclick="addReport()" style="margin-bottom:1.5rem"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Another Report</button>
 
         <div style="background:white;border:1.5px solid #e5e7eb;border-radius:14px;padding:1.25rem 1.5rem;margin-top:1rem">
           <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:#9ca3af;margin-bottom:1rem">What you'll get</div>
           <div style="display:flex;gap:2.5rem;flex-wrap:wrap">
-            <div><div style="font-size:.68rem;color:#9ca3af;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Identity</div><div style="font-size:.85rem;font-weight:600;color:#111827">🆔 Unique Health ID</div></div>
-            <div><div style="font-size:.68rem;color:#9ca3af;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Instantly</div><div style="font-size:.85rem;font-weight:600;color:#111827">📱 Personal QR Code</div></div>
-            <div><div style="font-size:.68rem;color:#9ca3af;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Security</div><div style="font-size:.85rem;font-weight:600;color:#111827">🔒 OTP Consent System</div></div>
+            <div><div style="font-size:.68rem;color:#9ca3af;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Identity</div><div style="font-size:.85rem;font-weight:600;color:#111827"> Unique Health ID</div></div>
+            <div><div style="font-size:.68rem;color:#9ca3af;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Instantly</div><div style="font-size:.85rem;font-weight:600;color:#111827"> Personal QR Code</div></div>
+            <div><div style="font-size:.68rem;color:#9ca3af;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">Security</div><div style="font-size:.85rem;font-weight:600;color:#111827"> OTP Consent System</div></div>
           </div>
         </div>
         <div class="fnav">
@@ -276,13 +276,13 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 let cur = 1;
-const hints = ['Step 1 of 4 — Basic Information','Step 2 of 4 — Emergency Contact','Step 3 of 4 — Medical History','Step 4 of 4 — Upload Reports'];
+const hints = ['Step 1 of 4 - Basic Information','Step 2 of 4 - Emergency Contact','Step 3 of 4 - Medical History','Step 4 of 4 - Upload Reports'];
 function sync(n) {
   for(let i=1;i<=4;i++){
     const vc=document.getElementById('vc-'+i), vt=document.getElementById('vt-'+i);
     vc.className='v-circle '+(i<n?'done':i===n?'active':'');
     vt.className='v-title '+(i<n?'done':i===n?'active':'');
-    vc.textContent=i<n?'✓':i;
+    vc.textContent=i<n?'':i;
     if(i<4){ const vl=document.getElementById('vl-'+i); vl.className='v-line '+(i<n?'done':''); }
   }
 }
@@ -312,7 +312,7 @@ function previewPhoto(input){
     r.readAsDataURL(input.files[0]);
   }
 }
-function mkRow(html){ const d=document.createElement('div'); d.className='drow'; d.innerHTML='<button type="button" class="dbtn" onclick="removeRow(this)">✕</button><div class="row g-2">'+html+'</div>'; return d; }
+function mkRow(html){ const d=document.createElement('div'); d.className='drow'; d.innerHTML='<button type="button" class="dbtn" onclick="removeRow(this)"></button><div class="row g-2">'+html+'</div>'; return d; }
 function addMedicine(){ document.getElementById('medicineContainer').appendChild(mkRow('<div class="col-md-3"><label class="form-label">Medicine</label><input type="text" name="medicineName[]" class="form-control" placeholder="Name"></div><div class="col-md-3"><label class="form-label">Dosage</label><input type="text" name="medicineDosage[]" class="form-control" placeholder="500mg"></div><div class="col-md-3"><label class="form-label">Duration</label><input type="text" name="medicineDuration[]" class="form-control" placeholder="3 months"></div><div class="col-md-3"><label class="form-label">Reason</label><input type="text" name="medicineReason[]" class="form-control" placeholder="For..."></div>')); }
 function addHistory(){ document.getElementById('historyContainer').appendChild(mkRow('<div class="col-md-2"><label class="form-label">Date</label><input type="date" name="historyDate[]" class="form-control"></div><div class="col-md-3"><label class="form-label">Hospital</label><input type="text" name="historyHospital[]" class="form-control" placeholder="Hospital name"></div><div class="col-md-3"><label class="form-label">Diagnosis</label><input type="text" name="historyDiagnosis[]" class="form-control" placeholder="Condition"></div><div class="col-md-2"><label class="form-label">Treatment</label><input type="text" name="historyTreatment[]" class="form-control" placeholder="Treatment"></div><div class="col-md-2"><label class="form-label">Doctor</label><input type="text" name="historyDoctor[]" class="form-control" placeholder="Dr. name"></div>')); }
 function addReport(){ document.getElementById('reportContainer').appendChild(mkRow('<div class="col-md-4"><label class="form-label">Title</label><input type="text" name="reportTitle[]" class="form-control" placeholder="e.g. X-Ray"></div><div class="col-md-4"><label class="form-label">Note</label><input type="text" name="reportDescription[]" class="form-control" placeholder="Description"></div><div class="col-md-4"><label class="form-label">File</label><input type="file" name="reportFiles" class="form-control" accept="image/*,.pdf"></div>')); }

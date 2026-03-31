@@ -1,12 +1,14 @@
 const mongoose = require('mongoose');
 
 const doctorSchema = new mongoose.Schema({
-  name:      { type: String, required: true },
-  email:     { type: String, required: true, unique: true },
-  password:  { type: String, required: true },
-  license:   { type: String, default: '' },
-  approved:  { type: Boolean, default: false },
-  createdAt: { type: Date, default: Date.now }
+  name:         { type: String, required: true },
+  email:        { type: String, required: true, unique: true },
+  password:     { type: String, required: true },
+  hospitalName: { type: String, default: '' },
+  photo:        { type: String, default: '' },
+  license:      { type: String, default: '' },
+  approved:     { type: Boolean, default: false },
+  createdAt:    { type: Date, default: Date.now }
 });
 
 module.exports = mongoose.model('Doctor', doctorSchema);

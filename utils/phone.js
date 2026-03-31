@@ -14,3 +14,4 @@ function normalizePhone(phone) {
 }
 
 module.exports = { normalizePhone };
+
