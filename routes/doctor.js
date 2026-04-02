@@ -11,47 +11,37 @@ const MedicalRecord = require('../models/MedicalRecord');
 const { sendOtpSms } = require('../utils/sms');
 const { normalizePhone } = require('../utils/phone');
 
+// ── OTP store ────────────────────────────────────────────────
 const otpStore = {};
 
-// Multer: license + doctor photo
+// ── Multer for license ───────────────────────────────────────
 const licenseDir = path.join(__dirname, '..', 'public', 'uploads', 'licenses');
-const docPhotoDir = path.join(__dirname, '..', 'public', 'uploads', 'doctor-photos');
-if (!fs.existsSync(licenseDir))   fs.mkdirSync(licenseDir,   { recursive: true });
-if (!fs.existsSync(docPhotoDir))  fs.mkdirSync(docPhotoDir,  { recursive: true });
-
+if (!fs.existsSync(licenseDir)) fs.mkdirSync(licenseDir, { recursive: true });
 const upload = multer({
   storage: multer.diskStorage({
-    destination: (req, file, cb) => {
-      if (file.fieldname === 'photo') cb(null, docPhotoDir);
-      else cb(null, licenseDir);
-    },
-    filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname))
-  }),
-  limits: { fileSize: 5 * 1024 * 1024 }
+    destination: (req, file, cb) => cb(null, licenseDir),
+    filename:    (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname))
+  })
 });
 
+// ── Auth middleware ──────────────────────────────────────────
 const authDoctor = (req, res, next) => {
   if (!req.session.doctorId) return res.redirect('/doctor/login');
   next();
 };
 
-// Register
+// ── Register ─────────────────────────────────────────────────
 router.get('/register', (req, res) => res.render('doctor/register', { error: null }));
 
-router.post('/register', upload.fields([
-  { name: 'license', maxCount: 1 },
-  { name: 'photo',   maxCount: 1 }
-]), async (req, res) => {
+router.post('/register', upload.single('license'), async (req, res) => {
   try {
-    const { name, email, password, hospitalName } = req.body;
+    const { name, email, password } = req.body;
     if (await Doctor.findOne({ email }))
       return res.render('doctor/register', { error: 'Email already registered.' });
     const hashed = await bcrypt.hash(password, 10);
     await Doctor.create({
       name, email, password: hashed,
-      hospitalName: hospitalName || '',
-      license: req.files && req.files['license'] ? '/uploads/licenses/' + req.files['license'][0].filename : '',
-      photo:   req.files && req.files['photo']   ? '/uploads/doctor-photos/' + req.files['photo'][0].filename : ''
+      license: req.file ? '/uploads/licenses/' + req.file.filename : ''
     });
     res.render('doctor/register-success');
   } catch (err) {
@@ -59,7 +49,7 @@ router.post('/register', upload.fields([
   }
 });
 
-// Login
+// ── Login ─────────────────────────────────────────────────────
 router.get('/login', (req, res) => res.render('doctor/login', { error: null }));
 
 router.post('/login', async (req, res) => {
@@ -69,61 +59,54 @@ router.post('/login', async (req, res) => {
   if (!doctor.approved) return res.render('doctor/login', { error: 'Your account is pending admin approval.' });
   const ok = await bcrypt.compare(password, doctor.password);
   if (!ok)              return res.render('doctor/login', { error: 'Incorrect password.' });
-  req.session.doctorId      = doctor._id;
-  req.session.doctorName    = doctor.name;
-  req.session.doctorPhoto   = doctor.photo || '';
-  req.session.doctorHospital = doctor.hospitalName || '';
+  req.session.doctorId   = doctor._id;
+  req.session.doctorName = doctor.name;
   res.redirect('/doctor/dashboard');
 });
 
-// Logout
-router.get('/logout', (req, res) => { req.session.destroy(); res.redirect('/doctor/login'); });
-
-// Dashboard
+// ── Dashboard ─────────────────────────────────────────────────
 router.get('/dashboard', authDoctor, (req, res) =>
   res.render('doctor/dashboard', {
-    doctorName:     req.session.doctorName,
-    doctorPhoto:    req.session.doctorPhoto || '',
-    doctorHospital: req.session.doctorHospital || '',
+    doctorName: req.session.doctorName,
     error: null, message: null
   })
 );
 
-// Request OTP
+// ── Request OTP ───────────────────────────────────────────────
 router.post('/request-otp', authDoctor, async (req, res) => {
   const { phone } = req.body;
   const normPhone = normalizePhone(phone);
+  // Try normalized first, then raw input
   let patient = await Patient.findOne({ phone: normPhone });
   if (!patient) patient = await Patient.findOne({ phone });
   if (!patient)
     return res.render('doctor/dashboard', {
       doctorName: req.session.doctorName,
-      doctorPhoto: req.session.doctorPhoto || '',
-      doctorHospital: req.session.doctorHospital || '',
-      error: 'No patient found with phone: ' + phone,
+      error: 'No patient found with phone: ' + phone + '. Make sure the number is registered.',
       message: null
     });
 
   const otp = crypto.randomInt(100000, 999999).toString();
   otpStore[normPhone] = { otp, expires: Date.now() + 5 * 60 * 1000 };
-  console.log('\nOTP for ' + phone + ' (' + patient.name + ') : ' + otp + '\n');
+  console.log(`\n📱  OTP for ${phone} (${patient.name}) : ${otp}\n`);
 
+  // Send OTP via SMS to the patient's emergency contact number
   const smsResult = await sendOtpSms(patient.emergencyContact, otp, patient.name);
 
   res.render('doctor/verify-otp', {
     phone: normPhone,
     patientName: patient.name,
     emergencyContact: patient.emergencyContact,
-    devOtp: '',
+    devOtp: '',  // Never show OTP on website
     smsSent: smsResult.success,
     message: smsResult.success
-      ? 'OTP sent via SMS to emergency contact (' + patient.emergencyContact + ')'
-      : 'OTP generated - check terminal for code',
+      ? `OTP sent via SMS to emergency contact (${patient.emergencyContact})`
+      : 'OTP generated (SMS not configured — check yellow box below)',
     error: null
   });
 });
 
-// Verify OTP
+// ── Verify OTP ────────────────────────────────────────────────
 router.post('/verify-otp', authDoctor, async (req, res) => {
   const { phone, otp } = req.body;
   const normPhone = normalizePhone(phone);
@@ -148,7 +131,7 @@ router.post('/verify-otp', authDoctor, async (req, res) => {
   if (!patient)
     return res.render('doctor/verify-otp', {
       phone, patientName: '', emergencyContact: '', devOtp: '', smsSent: false, message: null,
-      error: 'Patient record not found.'
+      error: 'Patient record not found. Please check the phone number.'
     });
   const records = await MedicalRecord.find({ patientId: patient._id }).sort({ date: -1 });
   res.render('doctor/patient-full', { patient, records });

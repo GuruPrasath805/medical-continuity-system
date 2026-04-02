@@ -2,243 +2,189 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Patient Detail - Admin</title>
+  <title>Patient Detail – Admin</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
-  <style>
-    body{background:#f8fafc}
-    .adm-header{background:linear-gradient(135deg,#052e16,#166534);padding:0}
-    .adm-topbar{display:flex;align-items:center;justify-content:space-between;padding:.85rem 2rem;border-bottom:1px solid rgba(255,255,255,.08)}
-    .adm-logo{font-family:'DM Serif Display',serif;font-size:1.1rem;color:white;display:flex;align-items:center;gap:10px}
-    .adm-logo span{width:32px;height:32px;background:rgba(255,255,255,.15);border-radius:8px;display:flex;align-items:center;justify-content:center}
-    .adm-nav{display:flex;gap:.5rem}
-    .adm-nav a{font-size:.78rem;color:rgba(255,255,255,.55);text-decoration:none;font-weight:600;padding:6px 14px;border-radius:6px;transition:all .2s}
-    .adm-nav a:hover,.adm-nav a.active{background:rgba(255,255,255,.12);color:white}
-    .pt-banner{padding:1.5rem 2rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap}
-    .pt-photo{width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,.25);flex-shrink:0}
-    .pt-photo-ph{width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.1);border:3px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0}
-    .pt-name{font-family:'DM Serif Display',serif;font-size:1.6rem;color:white;margin-bottom:3px}
-    .pt-sub{font-size:.8rem;color:rgba(255,255,255,.5)}
-    .pt-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-    .pt-chip{padding:3px 12px;border-radius:20px;font-size:.72rem;font-weight:700;border:1px solid}
-    .chip-blood{background:rgba(220,38,38,.2);color:#fca5a5;border-color:rgba(220,38,38,.3)}
-    .chip-allergy{background:rgba(217,119,6,.2);color:#fcd34d;border-color:rgba(217,119,6,.3)}
-    .chip-chronic{background:rgba(59,130,246,.2);color:#93c5fd;border-color:rgba(59,130,246,.3)}
-    .adm-body{padding:1.5rem 2rem}
-    .adm-tabs{display:flex;gap:.3rem;background:white;border-radius:12px;padding:.4rem;border:1px solid #e5e7eb;margin-bottom:1.5rem;box-shadow:0 1px 4px rgba(0,0,0,.05)}
-    .adm-tab{flex:1;padding:.55rem .5rem;border:none;border-radius:8px;font-size:.78rem;font-weight:700;color:#6b7280;background:transparent;cursor:pointer;transition:all .2s;text-align:center}
-    .adm-tab.active{background:#052e16;color:white;box-shadow:0 2px 8px rgba(5,46,22,.3)}
-    .adm-pane{display:none}.adm-pane.active{display:block}
-    .ac{background:white;border-radius:14px;border:1px solid #e5e7eb;box-shadow:0 2px 8px rgba(0,0,0,.04);margin-bottom:1rem;overflow:hidden}
-    .ac-hdr{padding:.85rem 1.2rem;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;gap:10px}
-    .ac-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0}
-    .ac-title{font-size:.85rem;font-weight:800;color:#111827}
-    .ac-cnt{font-size:.72rem;color:#9ca3af;background:#f3f4f6;border-radius:20px;padding:2px 10px;margin-left:auto;font-weight:600}
-    .ac-body{padding:1rem 1.2rem}
-    .emg-strip{background:linear-gradient(135deg,#7f1d1d,#991b1b);border-radius:12px;padding:1.1rem 1.4rem;color:white;margin-bottom:1rem}
-    .med-row{background:#f9fafb;border:1px solid #f3f4f6;border-radius:10px;padding:.8rem 1rem;margin-bottom:.5rem;border-left:3px solid #16a34a;display:flex;align-items:flex-start;gap:.75rem;flex-wrap:wrap}
-    .med-name{font-size:.88rem;font-weight:700;color:#111827;min-width:120px}
-    .med-tag{font-size:.7rem;color:#6b7280;background:white;border:1px solid #e5e7eb;border-radius:20px;padding:2px 9px;font-weight:600}
-    .hist-row{border:1px solid #e5e7eb;border-radius:10px;padding:.85rem 1rem;margin-bottom:.5rem;border-left:3px solid #3b82f6}
-    .hist-diag{font-size:.88rem;font-weight:700;color:#111827;margin-bottom:4px}
-    .hist-tag{font-size:.7rem;color:#6b7280;display:inline-flex;align-items:center;gap:4px;margin-right:.75rem}
-    .rep-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:.75rem}
-    .rep-card{background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;transition:all .2s}
-    .rep-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.08);transform:translateY(-2px)}
-    .rep-img{width:100%;height:120px;object-fit:cover;display:block;background:#e5e7eb}
-    .rep-pdf-ph{height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#f3f4f6;gap:6px}
-    .rep-info{padding:.7rem .85rem}
-    .rep-title{font-size:.8rem;font-weight:700;color:#111827}
-    .rep-date{font-size:.68rem;color:#9ca3af;margin-top:2px}
-    .rep-del{display:block;background:#fef2f2;border:none;border-top:1px solid #fee2e2;width:100%;padding:.5rem;font-size:.72rem;font-weight:700;color:#b91c1c;cursor:pointer;transition:all .2s}
-    .rep-del:hover{background:#fee2e2}
-    .empty-s{padding:2rem;text-align:center;color:#9ca3af;font-size:.85rem}
-    .qr-wrap{background:white;border:1.5px solid #e5e7eb;border-radius:14px;padding:12px;box-shadow:0 2px 8px rgba(0,0,0,.05);text-align:center;margin-left:auto}
-    .qr-wrap img{width:90px;height:90px;display:block}
-    @media(max-width:767px){.adm-topbar,.pt-banner,.adm-body{padding-left:1rem;padding-right:1rem}}
-  </style>
 </head>
 <body>
-<div class="adm-header">
-  <div class="adm-topbar">
-    <div class="adm-logo"><span></span> Medical Continuity - Admin</div>
-    <div class="adm-nav">
-      <a href="/admin/patients" class="active">Patients</a>
-      <a href="/admin/doctors">Doctors</a>
-      <a href="/admin/logout">Logout</a>
+<nav class="navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="/">🏥 Medical Continuity</a>
+    <div class="navbar-nav ms-auto d-flex flex-row gap-3 align-items-center">
+      <a class="nav-link" href="/admin/patients">← Patients</a>
+      <a class="nav-link" href="/admin/doctors">Doctors</a>
+      <a class="btn btn-outline-light btn-sm" href="/admin/logout">Logout</a>
     </div>
   </div>
-  <div class="pt-banner">
-    <% if(patient.photo){ %>
-      <img src="<%= patient.photo %>" class="pt-photo"
-           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-      <div class="pt-photo-ph" style="display:none"></div>
-    <% } else { %>
-      <div class="pt-photo-ph"></div>
-    <% } %>
-    <div style="flex:1">
-      <div class="pt-name"><%= patient.name %></div>
-      <div class="pt-sub">
-         <%= patient.phone %>
-        <% if(patient.gender){ %> &nbsp;.&nbsp; <%= patient.gender %><% } %>
-        <% if(patient.dateOfBirth){ %> &nbsp;.&nbsp; DOB: <%= patient.dateOfBirth %><% } %>
-        <% if(patient.address){ %> &nbsp;.&nbsp;  <%= patient.address %><% } %>
-      </div>
-      <div class="pt-chips">
-        <% if(patient.bloodGroup){    %><span class="pt-chip chip-blood"> <%= patient.bloodGroup %></span><% } %>
-        <% if(patient.allergies){     %><span class="pt-chip chip-allergy"> <%= patient.allergies %></span><% } %>
-        <% if(patient.chronicDiseases){%><span class="pt-chip chip-chronic"> <%= patient.chronicDiseases %></span><% } %>
-      </div>
-    </div>
-    <% if(patient.qrCode){ %>
-    <div class="qr-wrap">
-      <img src="<%= patient.qrCode %>" onerror="this.style.display='none'">
-      <div style="font-size:.6rem;color:#9ca3af;margin-top:5px;text-transform:uppercase;letter-spacing:1px">Health QR</div>
-    </div>
-    <% } %>
-  </div>
-</div>
+</nav>
+<div class="container py-5">
 
-<div class="adm-body">
-  <div class="adm-tabs">
-    <button class="adm-tab active" onclick="showAdmPane('overview',this)"> Overview</button>
-    <button class="adm-tab" onclick="showAdmPane('medicines',this)"> Medicines</button>
-    <button class="adm-tab" onclick="showAdmPane('history',this)"> History</button>
-    <button class="adm-tab" onclick="showAdmPane('reports',this)"> Reports</button>
-  </div>
-
-  <!-- OVERVIEW -->
-  <div class="adm-pane active" id="adm-overview">
-    <div class="row g-3">
-      <div class="col-lg-5">
-        <div class="emg-strip">
-          <div style="font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.45);margin-bottom:.5rem"> Emergency Contact</div>
-          <div style="font-family:'DM Serif Display',serif;font-size:1.25rem;color:white"><%= patient.emergencyName %></div>
-          <% if(patient.emergencyRelation){ %><div style="font-size:.78rem;color:rgba(255,255,255,.45);margin-bottom:.5rem"><%= patient.emergencyRelation %></div><% } %>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:700;color:#fca5a5;margin:.5rem 0"><%= patient.emergencyContact %></div>
-          <a href="tel:<%= patient.emergencyContact %>" style="display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:.6rem;font-size:.82rem;font-weight:700;color:white;text-decoration:none"> Call Emergency Contact</a>
-        </div>
-        <div class="ac">
-          <div class="ac-hdr"><div class="ac-icon" style="background:#f0fdf4"></div><div class="ac-title">Quick Stats</div></div>
-          <div class="ac-body">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.65rem">
-              <div style="background:#f9fafb;border-radius:10px;padding:.8rem;text-align:center"><div style="font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#9ca3af;margin-bottom:3px">Blood Group</div><div style="font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:700;color:#dc2626"><%= patient.bloodGroup||'-' %></div></div>
-              <div style="background:#f9fafb;border-radius:10px;padding:.8rem;text-align:center"><div style="font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#9ca3af;margin-bottom:3px">Medicines</div><div style="font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:700;color:#16a34a"><%= patient.medicines?patient.medicines.filter(m=>m.name).length:0 %></div></div>
-              <div style="background:#f9fafb;border-radius:10px;padding:.8rem;text-align:center"><div style="font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#9ca3af;margin-bottom:3px">Admin Reports</div><div style="font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:700;color:#8b5cf6"><%= records?records.length:0 %></div></div>
-              <div style="background:#f9fafb;border-radius:10px;padding:.8rem;text-align:center"><div style="font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#9ca3af;margin-bottom:3px">Patient Reports</div><div style="font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:700;color:#3b82f6"><%= patient.reports?patient.reports.length:0 %></div></div>
-            </div>
-          </div>
-        </div>
-        <a href="/admin/patient/<%= patient._id %>/add-record" class="btn btn-primary w-100 mb-2">+ Upload Admin Report</a>
-        <form method="POST" action="/admin/patient/<%= patient._id %>/delete" onsubmit="return confirm('Permanently delete <%= patient.name %> and all their records?')">
-          <button type="submit" class="btn w-100" style="background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;font-weight:700;font-size:.85rem"> Remove Patient</button>
-        </form>
-      </div>
-      <div class="col-lg-7">
-        <div class="ac">
-          <div class="ac-hdr"><div class="ac-icon" style="background:#f0fdf4"></div><div class="ac-title">Current Medicines</div><div class="ac-cnt"><%= patient.medicines?patient.medicines.filter(m=>m.name).length:0 %></div></div>
-          <div class="ac-body">
-            <% if(!patient.medicines||patient.medicines.filter(m=>m.name).length===0){ %>
-              <div class="empty-s">No medicines recorded</div>
-            <% } else { %>
-              <% patient.medicines.slice(0,4).forEach(function(m){ if(m.name){ %>
-              <div class="med-row"><div class="med-name"><%= m.name %></div><div style="display:flex;gap:6px;flex-wrap:wrap"><% if(m.dosage){%><span class="med-tag"> <%= m.dosage %></span><%}%><% if(m.duration){%><span class="med-tag"> <%= m.duration %></span><%}%><% if(m.reason){%><span class="med-tag"> <%= m.reason %></span><%}%></div></div>
-              <% } }); %>
-            <% } %>
-          </div>
-        </div>
-        <div class="ac">
-          <div class="ac-hdr"><div class="ac-icon" style="background:#eff6ff"></div><div class="ac-title">Medical History</div><div class="ac-cnt"><%= patient.medicalHistory?patient.medicalHistory.filter(h=>h.date||h.diagnosis).length:0 %></div></div>
-          <div class="ac-body">
-            <% if(!patient.medicalHistory||patient.medicalHistory.filter(h=>h.date||h.diagnosis).length===0){ %>
-              <div class="empty-s">No history recorded</div>
-            <% } else { %>
-              <% patient.medicalHistory.slice(0,3).forEach(function(h){ if(h.date||h.diagnosis){ %>
-              <div class="hist-row"><div class="hist-diag"><%= h.diagnosis||'Treatment' %></div><div><% if(h.date){%><span class="hist-tag"> <%= h.date %></span><%}%><% if(h.hospital){%><span class="hist-tag"> <%= h.hospital %></span><%}%><% if(h.doctor){%><span class="hist-tag"> <%= h.doctor %></span><%}%></div></div>
-              <% } }); %>
-            <% } %>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- MEDICINES -->
-  <div class="adm-pane" id="adm-medicines">
-    <div class="ac">
-      <div class="ac-hdr"><div class="ac-icon" style="background:#f0fdf4"></div><div class="ac-title">All Medicines</div><div class="ac-cnt"><%= patient.medicines?patient.medicines.filter(m=>m.name).length:0 %></div></div>
-      <div class="ac-body">
-        <% if(!patient.medicines||patient.medicines.filter(m=>m.name).length===0){ %><div class="empty-s">No medicines recorded</div>
-        <% } else { patient.medicines.forEach(function(m){ if(m.name){ %>
-        <div class="med-row"><div class="med-name"><%= m.name %></div><div style="display:flex;gap:6px;flex-wrap:wrap"><% if(m.dosage){%><span class="med-tag"> Dosage: <%= m.dosage %></span><%}%><% if(m.duration){%><span class="med-tag"> <%= m.duration %></span><%}%><% if(m.reason){%><span class="med-tag"> <%= m.reason %></span><%}%></div></div>
-        <% } }); } %>
-      </div>
-    </div>
-  </div>
-
-  <!-- HISTORY -->
-  <div class="adm-pane" id="adm-history">
-    <div class="ac">
-      <div class="ac-hdr"><div class="ac-icon" style="background:#eff6ff"></div><div class="ac-title">Medical History</div><div class="ac-cnt"><%= patient.medicalHistory?patient.medicalHistory.filter(h=>h.date||h.diagnosis).length:0 %></div></div>
-      <div class="ac-body">
-        <% if(!patient.medicalHistory||patient.medicalHistory.filter(h=>h.date||h.diagnosis).length===0){ %><div class="empty-s">No history recorded</div>
-        <% } else { patient.medicalHistory.forEach(function(h){ if(h.date||h.diagnosis){ %>
-        <div class="hist-row"><div class="hist-diag"><%= h.diagnosis||'Treatment' %></div><div><% if(h.date){%><span class="hist-tag"> <%= h.date %></span><%}%><% if(h.hospital){%><span class="hist-tag"> <%= h.hospital %></span><%}%><% if(h.doctor){%><span class="hist-tag"> Dr. <%= h.doctor %></span><%}%><% if(h.treatment){%><span class="hist-tag"> <%= h.treatment %></span><%}%></div></div>
-        <% } }); } %>
-      </div>
-    </div>
-  </div>
-
-  <!-- REPORTS -->
-  <div class="adm-pane" id="adm-reports">
-    <div class="ac mb-3">
-      <div class="ac-hdr"><div class="ac-icon" style="background:#faf5ff"></div><div class="ac-title">Admin Uploaded Reports</div><div class="ac-cnt"><%= records?records.length:0 %></div><a href="/admin/patient/<%= patient._id %>/add-record" class="btn btn-primary btn-sm ms-2" style="font-size:.75rem">+ Add</a></div>
-      <div class="ac-body">
-        <% if(!records||records.length===0){ %><div class="empty-s">No admin reports uploaded yet</div>
-        <% }else{ %>
-          <div class="rep-grid">
-            <% records.forEach(r=>{%>
-            <div class="rep-card">
-              <a href="<%= r.reportImage %>" target="_blank">
-                <% if(r.reportImage){%><img src="<%= r.reportImage %>" class="rep-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="rep-pdf-ph" style="display:none"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span style="font-size:.68rem;color:#9ca3af">View PDF</span></div><%}%>
-              </a>
-              <div class="rep-info"><div class="rep-title"><%= r.title %></div><div class="rep-date"><%= new Date(r.date).toLocaleDateString('en-IN') %></div><% if(r.description){%><div style="font-size:.72rem;color:#9ca3af;margin-top:2px"><%= r.description %></div><%}%></div>
-              <form method="POST" action="/admin/record/<%= r._id %>/delete" onsubmit="return confirm('Delete?')"><button type="submit" class="rep-del"> Delete</button></form>
-            </div>
-            <%})%>
-          </div>
+  <!-- Patient Header -->
+  <div class="card-box mb-4">
+    <div class="row g-3 align-items-center">
+      <div class="col-auto">
+        <% if(patient.photo){ %>
+          <img src="<%= BASE_URL %><%= patient.photo %>" class="patient-photo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <% } else { %>
+          <div class="patient-photo-placeholder">👤</div>
         <% } %>
       </div>
-    </div>
-    <div class="ac">
-      <div class="ac-hdr"><div class="ac-icon" style="background:#f0fdf4"></div><div class="ac-title">Patient Uploaded Reports</div><div class="ac-cnt"><%= patient.reports?patient.reports.length:0 %></div></div>
-      <div class="ac-body">
-        <% if(!patient.reports||patient.reports.length===0){ %><div class="empty-s">Patient has not uploaded any reports</div>
-        <% }else{ %>
-          <div class="rep-grid">
-            <% patient.reports.slice().reverse().forEach(r=>{%>
-            <a href="<%= r.fileUrl %>" target="_blank" style="text-decoration:none" class="rep-card" style="display:block">
-              <% if(r.fileUrl){%><img src="<%= r.fileUrl %>" class="rep-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="rep-pdf-ph" style="display:none"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span style="font-size:.68rem;color:#9ca3af">View PDF</span></div><%}%>
-              <div class="rep-info"><div class="rep-title"><%= r.title %></div><div class="rep-date"><%= r.uploadedAt?new Date(r.uploadedAt).toLocaleDateString('en-IN'):'' %></div></div>
-            </a>
-            <%})%>
+      <div class="col">
+        <h4 style="color:var(--green);font-weight:800;margin:0"><%= patient.name %></h4>
+        <p class="text-muted mb-1">📞 <%= patient.phone %>
+          <% if(patient.gender){%> &nbsp;|&nbsp; <%= patient.gender %><% } %>
+          <% if(patient.dateOfBirth){%> &nbsp;|&nbsp; DOB: <%= patient.dateOfBirth %><% } %>
+        </p>
+        <% if(patient.address){%><p class="text-muted small mb-1">📍 <%= patient.address %></p><% } %>
+        <div>
+          <% if(patient.bloodGroup){%><span class="badge-red me-1">🩸 <%= patient.bloodGroup %></span><% } %>
+          <% if(patient.allergies){%><span class="badge-yellow me-1">⚠️ <%= patient.allergies %></span><% } %>
+          <% if(patient.chronicDiseases){%><span class="badge-blue me-1">🏥 <%= patient.chronicDiseases %></span><% } %>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div style="background:var(--green-light);border-radius:10px;padding:0.75rem;text-align:center">
+          <p class="mb-0 small text-muted">🆘 Emergency</p>
+          <strong style="color:var(--green-dark)"><%= patient.emergencyName %></strong><br>
+          <% if(patient.emergencyRelation){%><small class="text-muted">(<%= patient.emergencyRelation %>)</small><br><% } %>
+          <strong style="color:var(--danger)"><%= patient.emergencyContact %></strong>
+        </div>
+        <a href="/admin/patient/<%= patient._id %>/add-record" class="btn btn-primary btn-sm w-100 mt-2">+ Upload Report</a>
+      </div>
+      <div class="col-auto">
+        <% if(patient.qrCode){ %>
+          <div style="background:white;border:2px solid var(--green);padding:8px;border-radius:10px">
+            <img src="<%= BASE_URL %><%= patient.qrCode %>" style="width:90px;height:90px" onerror="this.style.display='none'">
           </div>
         <% } %>
       </div>
     </div>
   </div>
 
-  <div class="mt-3"><a href="/admin/patients" class="btn btn-outline-secondary btn-sm">&larr; Back to Patients</a></div>
-</div>
+  <div class="row g-4">
+    <!-- Medicines -->
+    <div class="col-md-6">
+      <div class="card-box">
+        <h5 style="color:var(--green)">💊 Medicines (Last 1 Year)</h5>
+        <% if(!patient.medicines || patient.medicines.length===0){%><p class="text-muted">None recorded.</p>
+        <% } else { patient.medicines.forEach(m=>{ if(m.name){ %>
+          <div class="med-card">
+            <h6><%= m.name %></h6>
+            <% if(m.dosage)  {%><small class="text-muted">Dosage: <b><%= m.dosage %></b> &nbsp;</small><% } %>
+            <% if(m.duration){%><small class="text-muted">Duration: <b><%= m.duration %></b> &nbsp;</small><% } %>
+            <% if(m.reason)  {%><br><small class="text-muted">Reason: <b><%= m.reason %></b></small><% } %>
+          </div>
+        <% }}) } %>
+      </div>
+    </div>
 
+    <!-- Medical History -->
+    <div class="col-md-6">
+      <div class="card-box">
+        <h5 style="color:var(--green)">📋 Medical History</h5>
+        <% if(!patient.medicalHistory || patient.medicalHistory.length===0){%><p class="text-muted">None recorded.</p>
+        <% } else { patient.medicalHistory.forEach(h=>{ if(h.date||h.diagnosis){ %>
+          <div class="hist-card">
+            <h6><%= h.diagnosis||'Treatment' %></h6>
+            <% if(h.date)     {%><small class="text-muted">📅 <%= h.date %> &nbsp;</small><% } %>
+            <% if(h.hospital) {%><small class="text-muted">🏥 <%= h.hospital %> &nbsp;</small><% } %>
+            <% if(h.doctor)   {%><small class="text-muted">👨‍⚕️ <%= h.doctor %></small><% } %>
+            <% if(h.treatment){%><br><small class="text-muted">Treatment: <b><%= h.treatment %></b></small><% } %>
+          </div>
+        <% }}) } %>
+      </div>
+    </div>
+
+    <!-- Admin-uploaded Reports (MedicalRecord collection) -->
+    <div class="col-12">
+      <div class="card-box">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <h5 style="color:var(--green);margin:0">🗂️ Admin-Uploaded Reports (<%= records.length %>)</h5>
+          <a href="/admin/patient/<%= patient._id %>/add-record" class="btn btn-primary btn-sm">+ Add Report</a>
+        </div>
+        <% if(records.length===0){ %>
+          <div style="background:#f9fafb;border-radius:10px;padding:2rem;text-align:center">
+            <div style="font-size:2rem;margin-bottom:8px">📂</div>
+            <p class="text-muted" style="font-size:0.87rem;margin:0">No admin reports uploaded yet.</p>
+          </div>
+        <% } else { %>
+          <div class="row g-3">
+            <% records.forEach(r=>{ %>
+            <div class="col-md-4">
+              <div style="background:white;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow-sm)">
+                <% if(r.reportImage){ %>
+                  <a href="<%= BASE_URL %><%= r.reportImage %>" target="_blank">
+                    <img src="<%= BASE_URL %><%= r.reportImage %>"
+                      style="width:100%;height:130px;object-fit:cover;display:block;background:#f3f4f6"
+                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div style="display:none;height:90px;align-items:center;justify-content:center;background:#f8fafc;flex-direction:column;gap:6px">
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                      <span style="font-size:0.72rem;color:#9ca3af">View PDF</span>
+                    </div>
+                  </a>
+                <% } %>
+                <div style="padding:0.9rem 1rem">
+                  <div class="d-flex justify-content-between align-items-start mb-1">
+                    <strong style="font-size:0.87rem;color:var(--green-dark)"><%= r.title %></strong>
+                    <small class="text-muted" style="font-size:0.7rem;white-space:nowrap;margin-left:6px"><%= new Date(r.date).toLocaleDateString('en-IN') %></small>
+                  </div>
+                  <% if(r.description){ %><p class="text-muted" style="font-size:0.78rem;margin-bottom:8px"><%= r.description %></p><% } %>
+                  <form method="POST" action="/admin/record/<%= r._id %>/delete" onsubmit="return confirm('Delete this report?')">
+                    <button type="submit" class="btn btn-sm w-100" style="background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;font-size:0.78rem;font-weight:600">Delete</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <% }) %>
+          </div>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- Patient's own uploaded reports -->
+    <div class="col-12">
+      <div class="card-box">
+        <h5 style="color:var(--green);margin-bottom:1rem">📎 Patient-Uploaded Reports (<%= patient.reports ? patient.reports.length : 0 %>)</h5>
+        <% if(!patient.reports || patient.reports.length === 0){ %>
+          <div style="background:#f9fafb;border-radius:10px;padding:2rem;text-align:center">
+            <div style="font-size:2rem;margin-bottom:8px">📋</div>
+            <p class="text-muted" style="font-size:0.87rem;margin:0">Patient has not uploaded any reports yet.</p>
+          </div>
+        <% } else { %>
+          <div class="row g-3">
+            <% patient.reports.slice().reverse().forEach(r=>{ %>
+            <div class="col-md-4">
+              <div style="background:white;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow-sm)">
+                <% if(r.fileUrl){ %>
+                  <a href="<%= BASE_URL %><%= r.fileUrl %>" target="_blank">
+                    <img src="<%= BASE_URL %><%= r.fileUrl %>"
+                      style="width:100%;height:130px;object-fit:cover;display:block;background:#f3f4f6"
+                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div style="display:none;height:90px;align-items:center;justify-content:center;background:#f8fafc;flex-direction:column;gap:6px">
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                      <span style="font-size:0.72rem;color:#9ca3af">View PDF</span>
+                    </div>
+                  </a>
+                <% } %>
+                <div style="padding:0.9rem 1rem">
+                  <div class="d-flex justify-content-between align-items-start mb-1">
+                    <strong style="font-size:0.87rem;color:var(--green-dark)"><%= r.title %></strong>
+                    <small class="text-muted" style="font-size:0.7rem;white-space:nowrap;margin-left:6px"><%= r.uploadedAt ? new Date(r.uploadedAt).toLocaleDateString('en-IN') : '' %></small>
+                  </div>
+                  <% if(r.description){ %><p class="text-muted" style="font-size:0.78rem;margin:0"><%= r.description %></p><% } %>
+                </div>
+              </div>
+            </div>
+            <% }) %>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <a href="/admin/patients" class="btn btn-outline-primary mt-4">← Back to Patients</a>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-function showAdmPane(name,btn){
-  document.querySelectorAll('.adm-pane').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.adm-tab').forEach(b=>b.classList.remove('active'));
-  document.getElementById('adm-'+name).classList.add('active');
-  btn.classList.add('active');
-}
-</script>
 </body>
 </html>
+

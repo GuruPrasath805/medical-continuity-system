@@ -2,154 +2,152 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Admin - Doctors</title>
+  <title>Admin — Doctors</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
   <style>
-    body { background: #f8faf8; }
-    .top-bar { background: white; border-bottom: 1px solid #e5e7eb; padding: .75rem 0; position: sticky; top: 0; z-index: 100; }
-    .page-hero { background: linear-gradient(135deg,#052e16,#14532d 55%,#166534); padding: 2rem 0 3.5rem; color: white; }
-    .pull-up { margin-top: -2rem; position: relative; z-index: 2; }
-    .stat-card { background: white; border-radius: 16px; padding: 1.2rem 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,.06); display: flex; align-items: center; gap: 1rem; }
-    .stat-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .stat-num { font-size: 1.7rem; font-weight: 800; color: #111827; line-height: 1; }
-    .stat-lbl { font-size: .72rem; color: #9ca3af; font-weight: 700; margin-top: 2px; text-transform: uppercase; letter-spacing: .5px; }
-    .section-head { font-size: .7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: #9ca3af; margin: 1.5rem 0 1rem; display: flex; align-items: center; gap: 8px; }
-    .section-head::after { content: ''; flex: 1; height: 1px; background: #e5e7eb; }
-    .doc-card { background: white; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,.05); overflow: hidden; margin-bottom: .75rem; }
-    .doc-row { padding: 1.2rem 1.5rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
-    .doc-avatar { width: 44px; height: 44px; border-radius: 50%; background: #f0fdf4; border: 2px solid #bbf7d0; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: .9rem; color: #16a34a; flex-shrink: 0; overflow: hidden; }
-    .doc-avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .doc-name { font-weight: 700; font-size: .92rem; color: #111827; }
-    .doc-email { font-size: .75rem; color: #9ca3af; margin-top: 1px; }
-    .doc-hospital { font-size: .75rem; color: #6b7280; margin-top: 2px; }
-    .pending-badge { background: #fffbeb; border: 1px solid #fde68a; border-radius: 20px; padding: 3px 12px; font-size: .72rem; font-weight: 700; color: #92400e; }
-    .approved-badge { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 20px; padding: 3px 12px; font-size: .72rem; font-weight: 700; color: #166534; }
-    .btn-approve { background: #16a34a; color: white; border: none; border-radius: 8px; padding: 7px 18px; font-size: .8rem; font-weight: 700; cursor: pointer; transition: all .2s; }
-    .btn-approve:hover { background: #15803d; }
-    .btn-reject { background: white; color: #b91c1c; border: 1.5px solid #fecaca; border-radius: 8px; padding: 7px 18px; font-size: .8rem; font-weight: 700; cursor: pointer; transition: all .2s; }
-    .btn-reject:hover { background: #fef2f2; }
-    .btn-remove { background: white; color: #b91c1c; border: 1.5px solid #fecaca; border-radius: 8px; padding: 6px 14px; font-size: .78rem; font-weight: 700; cursor: pointer; }
-    .btn-license { color: #2563eb; font-size: .78rem; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 4px 10px; }
-    .empty-box { background: white; border-radius: 14px; padding: 2rem; text-align: center; color: #9ca3af; box-shadow: 0 2px 8px rgba(0,0,0,.05); }
+    body { background: var(--bg); }
+    .admin-topbar { background: white; border-bottom: 1px solid var(--border); padding: 0.75rem 0; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 0 rgba(0,0,0,0.04); }
+    .admin-page-header { background: linear-gradient(140deg,#052e16,#166534); padding: 2rem 0 3.5rem; color: white; }
+    .admin-content { margin-top: -2rem; position: relative; z-index: 1; }
+    .pending-card { background: white; border-radius: var(--radius); border: 1px solid #fde68a; box-shadow: var(--shadow-sm); padding: 1.5rem; transition: all 0.2s; }
+    .pending-card:hover { box-shadow: var(--shadow); }
   </style>
 </head>
 <body>
-
-<div class="top-bar">
+<div class="admin-topbar">
   <div class="container d-flex align-items-center justify-content-between">
     <a href="/" style="font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--green);text-decoration:none;display:flex;align-items:center;gap:8px">
       <svg width="22" height="22" viewBox="0 0 26 26" fill="none"><rect width="26" height="26" rx="7" fill="#16a34a"/><path d="M13 6v14M6 13h14" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>
       Medical Continuity
     </a>
     <div class="d-flex align-items-center gap-3">
-      <a href="/admin/patients" style="font-size:.85rem;color:#6b7280;text-decoration:none">Patients</a>
-      <a href="/admin/doctors"  style="font-weight:700;color:var(--green);font-size:.85rem;text-decoration:none">Doctors</a>
-      <a href="/admin/logout"   class="btn btn-sm btn-outline-secondary" style="border-radius:20px;font-size:.82rem">Sign Out</a>
+      <a href="/admin/patients" class="nav-link">Patients</a>
+      <a href="/admin/doctors"  class="nav-link" style="font-weight:600;color:var(--green)">Doctors</a>
+      <a href="/admin/logout" class="btn btn-sm btn-outline-primary" style="border-radius:20px;padding:5px 16px">Sign Out</a>
     </div>
   </div>
 </div>
 
-<div class="page-hero">
+<div class="admin-page-header">
   <div class="container">
-    <div style="font-size:.7rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.3rem">Admin Panel</div>
-    <h2 style="font-family:'DM Serif Display',serif;color:white;font-size:2rem;margin:0">Doctor Management</h2>
-    <p style="color:rgba(255,255,255,.45);font-size:.85rem;margin-top:4px">Review and approve doctor registrations</p>
+    <span style="font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;opacity:0.5">Admin Panel</span>
+    <h2 style="font-family:'DM Serif Display',serif;color:white;font-size:2rem;margin-top:4px">Doctor Management</h2>
   </div>
 </div>
 
-<div class="container pull-up pb-5">
+<div class="container admin-content pb-5">
+
   <!-- Stats -->
   <div class="row g-3 mb-4">
-    <div class="col-6">
-      <div class="stat-card">
-        <div class="stat-icon" style="background:#f0fdf4">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-        </div>
-        <div><div class="stat-num"><%= approved.length %></div><div class="stat-lbl">Approved</div></div>
+    <div class="col-6 col-md-3">
+      <div class="stat-pill">
+        <div class="stat-pill-icon">✅</div>
+        <div><div class="stat-pill-num"><%= approved.length %></div><div class="stat-pill-lbl">Approved</div></div>
       </div>
     </div>
-    <div class="col-6">
-      <div class="stat-card">
-        <div class="stat-icon" style="background:#fffbeb">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        </div>
-        <div><div class="stat-num"><%= pending.length %></div><div class="stat-lbl">Pending</div></div>
+    <div class="col-6 col-md-3">
+      <div class="stat-pill">
+        <div class="stat-pill-icon" style="background:#fffbeb">⏳</div>
+        <div><div class="stat-pill-num"><%= pending.length %></div><div class="stat-pill-lbl">Pending</div></div>
       </div>
     </div>
   </div>
 
   <!-- Pending -->
-  <div class="section-head">Pending Applications <% if(pending.length > 0){ %><span style="background:#fde68a;color:#92400e;border-radius:20px;padding:1px 8px;font-size:.7rem"><%= pending.length %> awaiting review</span><% } %></div>
-
-  <% if(pending.length === 0){ %>
-    <div class="empty-box">No pending applications - all doctors have been reviewed.</div>
-  <% } %>
-
-  <% pending.forEach(function(d){ %>
-  <div class="doc-card">
-    <div class="doc-row">
-      <div class="doc-avatar">
-        <% if(d.photo){ %>
-          <img src="<%= d.photo %>" onerror="this.parentElement.textContent='Dr'">
-        <% } else { %>
-          Dr
-        <% } %>
-      </div>
-      <div style="flex:1;min-width:150px">
-        <div class="doc-name">Dr. <%= d.name %></div>
-        <div class="doc-email"><%= d.email %></div>
-        <% if(d.hospitalName){ %><div class="doc-hospital"><%= d.hospitalName %></div><% } %>
-      </div>
-      <span class="pending-badge">Pending</span>
-      <% if(d.license){ %>
-        <a href="<%= d.license %>" target="_blank" class="btn-license">View License</a>
-      <% } %>
-      <div style="display:flex;gap:.5rem;flex-wrap:wrap">
-        <form method="POST" action="/admin/doctors/approve/<%= d._id %>" style="display:inline">
-          <button type="submit" class="btn-approve">Approve</button>
-        </form>
-        <form method="POST" action="/admin/doctors/reject/<%= d._id %>" style="display:inline" onsubmit="return confirm('Reject Dr. <%= d.name %>?')">
-          <button type="submit" class="btn-reject">Reject</button>
-        </form>
-      </div>
-    </div>
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h6 style="margin:0;font-weight:700;font-size:0.88rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted)">Pending Applications</h6>
+    <% if(pending.length>0){ %><span class="badge-yellow"><%= pending.length %> awaiting review</span><% } %>
   </div>
-  <% }) %>
+
+  <% if(pending.length===0){ %>
+    <div class="card-box text-center py-4 mb-4" style="border-style:dashed">
+      <p class="text-muted mb-0" style="font-size:0.88rem">No pending applications right now.</p>
+    </div>
+  <% } else { %>
+    <div class="row g-3 mb-4">
+      <% pending.forEach(doc=>{ %>
+      <div class="col-md-6">
+        <div class="pending-card">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div class="d-flex align-items-center gap-3">
+              <div style="width:44px;height:44px;background:var(--green-light);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem">👨‍⚕️</div>
+              <div>
+                <h6 style="margin:0;font-weight:700"><%= doc.name %></h6>
+                <small style="color:var(--muted)"><%= doc.email %></small>
+              </div>
+            </div>
+            <span class="badge-yellow">Pending</span>
+          </div>
+          <% if(doc.license){ %>
+            <a href="<%= doc.license %>" target="_blank" class="btn btn-outline-primary btn-sm w-100 mb-3">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="margin-right:5px;margin-top:-2px"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              View License Document
+            </a>
+          <% } %>
+          <div class="d-flex gap-2">
+            <form method="POST" action="/admin/doctors/approve/<%= doc._id %>" style="flex:1">
+              <button type="submit" class="btn btn-success w-100">✓ Approve</button>
+            </form>
+            <form method="POST" action="/admin/doctors/reject/<%= doc._id %>" style="flex:1" onsubmit="return confirm('Reject and permanently delete this application?')">
+              <button type="submit" class="btn btn-danger w-100">✗ Reject</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <% }) %>
+    </div>
+  <% } %>
 
   <!-- Approved -->
-  <div class="section-head">Approved Doctors</div>
+  <div class="d-flex align-items-center justify-content-between mb-3 mt-2">
+    <h6 style="margin:0;font-weight:700;font-size:0.88rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted)">Approved Doctors</h6>
+  </div>
 
-  <% if(approved.length === 0){ %>
-    <div class="empty-box">No approved doctors yet.</div>
+  <% if(approved.length===0){ %>
+    <div class="card-box text-center py-4" style="border-style:dashed">
+      <p class="text-muted mb-0" style="font-size:0.88rem">No approved doctors yet.</p>
+    </div>
+  <% } else { %>
+    <div class="card-box p-0" style="overflow:hidden">
+      <div style="overflow-x:auto">
+        <table class="table mb-0">
+          <thead>
+            <tr><th>Doctor</th><th>Email</th><th>License</th><th>Status</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            <% approved.forEach(doc=>{ %>
+            <tr>
+              <td>
+                <div class="d-flex align-items-center gap-2">
+                  <div style="width:34px;height:34px;background:var(--green-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.95rem">👨‍⚕️</div>
+                  <strong style="font-size:0.9rem"><%= doc.name %></strong>
+                </div>
+              </td>
+              <td style="font-size:0.85rem;color:var(--muted)"><%= doc.email %></td>
+              <td>
+                <% if(doc.license){ %>
+                  <a href="<%= doc.license %>" target="_blank" class="btn btn-outline-primary btn-sm">View</a>
+                <% } else { %>
+                  <span style="color:var(--muted);font-size:0.82rem">—</span>
+                <% } %>
+              </td>
+              <td><span class="badge-green">Active</span></td>
+              <td>
+                <form method="POST" action="/admin/doctors/remove/<%= doc._id %>" onsubmit="return confirm('Remove Dr. <%= doc.name %>? This cannot be undone.')">
+                  <button type="submit" class="btn btn-sm" style="background:#fef2f2;color:#b91c1c;border:1px solid #fca5a5;font-weight:600">Remove</button>
+                </form>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
   <% } %>
 
-  <% approved.forEach(function(d){ %>
-  <div class="doc-card">
-    <div class="doc-row">
-      <div class="doc-avatar">
-        <% if(d.photo){ %>
-          <img src="<%= d.photo %>" onerror="this.parentElement.textContent='Dr'">
-        <% } else { %>
-          Dr
-        <% } %>
-      </div>
-      <div style="flex:1;min-width:150px">
-        <div class="doc-name">Dr. <%= d.name %></div>
-        <div class="doc-email"><%= d.email %></div>
-        <% if(d.hospitalName){ %><div class="doc-hospital"><%= d.hospitalName %></div><% } %>
-      </div>
-      <span class="approved-badge">Approved</span>
-      <% if(d.license){ %>
-        <a href="<%= d.license %>" target="_blank" class="btn-license">View License</a>
-      <% } %>
-      <form method="POST" action="/admin/doctors/remove/<%= d._id %>" style="display:inline" onsubmit="return confirm('Remove Dr. <%= d.name %>?')">
-        <button type="submit" class="btn-remove">Remove</button>
-      </form>
-    </div>
-  </div>
-  <% }) %>
-
 </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+

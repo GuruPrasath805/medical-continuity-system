@@ -2,182 +2,128 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Admin - Patients</title>
+  <title>Admin — Patients</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
   <style>
-    body { background: #f8faf8; }
-    .top-bar { background: white; border-bottom: 1px solid #e5e7eb; padding: .75rem 0; position: sticky; top: 0; z-index: 100; }
-    .page-hero { background: linear-gradient(135deg,#052e16,#14532d 55%,#166534); padding: 2rem 0 3.5rem; color: white; }
-    .pull-up { margin-top: -2rem; position: relative; z-index: 2; }
-    .stat-card { background: white; border-radius: 16px; padding: 1.2rem 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,.06); display: flex; align-items: center; gap: 1rem; }
-    .stat-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .stat-num { font-size: 1.7rem; font-weight: 800; color: #111827; line-height: 1; }
-    .stat-lbl { font-size: .72rem; color: #9ca3af; font-weight: 700; margin-top: 2px; text-transform: uppercase; letter-spacing: .5px; }
-    .search-bar { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: .85rem 1.2rem; display: flex; align-items: center; gap: .75rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,.04); }
-    .search-input { flex: 1; border: none; outline: none; font-size: .88rem; color: #111827; font-family: 'DM Sans',sans-serif; }
-    .table-card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
-    .t-head { display: grid; grid-template-columns: 40px 2.5fr 1fr 80px 1.5fr 100px 160px; gap: .75rem; padding: .75rem 1.2rem; background: #f8faf8; border-bottom: 1px solid #e5e7eb; }
-    .t-head-cell { font-size: .62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #9ca3af; }
-    .t-row { display: grid; grid-template-columns: 40px 2.5fr 1fr 80px 1.5fr 100px 160px; gap: .75rem; padding: .85rem 1.2rem; border-bottom: 1px solid #f3f4f6; align-items: center; transition: background .15s; }
-    .t-row:last-child { border-bottom: none; }
-    .t-row:hover { background: #f8faf8; }
-    .row-num { font-size: .8rem; color: #9ca3af; font-weight: 600; }
-    .pt-cell { display: flex; align-items: center; gap: 10px; min-width: 0; }
-    .pt-photo { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid #e5e7eb; flex-shrink: 0; background: #f0fdf4; }
-    .pt-name { font-weight: 700; font-size: .88rem; color: #111827; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .pt-phone { font-size: .72rem; color: #9ca3af; font-family: monospace; margin-top: 1px; }
-    .phone-cell { font-size: .82rem; color: #374151; font-family: monospace; }
-    .blood-pill { background: #fef2f2; border: 1px solid #fecaca; border-radius: 20px; padding: 2px 10px; font-size: .75rem; font-weight: 800; color: #b91c1c; display: inline-block; }
-    .emg-cell { font-size: .8rem; color: #374151; }
-    .emg-phone { font-size: .7rem; color: #9ca3af; font-family: monospace; margin-top: 1px; }
-    .date-cell { font-size: .78rem; color: #6b7280; }
-    .actions { display: flex; gap: .35rem; flex-wrap: wrap; }
-    .btn-view { background: #16a34a; color: white; border: none; border-radius: 8px; padding: 5px 14px; font-size: .75rem; font-weight: 700; text-decoration: none; cursor: pointer; white-space: nowrap; }
-    .btn-view:hover { background: #15803d; color: white; }
-    .btn-report { background: white; color: #1e40af; border: 1px solid #bfdbfe; border-radius: 8px; padding: 5px 10px; font-size: .75rem; font-weight: 700; text-decoration: none; white-space: nowrap; }
-    .btn-report:hover { background: #eff6ff; color: #1e40af; }
-    .btn-remove { background: white; color: #b91c1c; border: 1px solid #fecaca; border-radius: 8px; padding: 5px 10px; font-size: .75rem; font-weight: 700; cursor: pointer; white-space: nowrap; }
-    .btn-remove:hover { background: #fef2f2; }
-    .empty-row { padding: 3rem; text-align: center; color: #9ca3af; }
-    @media(max-width:900px) { .t-head { display: none; } .t-row { grid-template-columns: 1fr; gap: .4rem; padding: 1rem; } }
+    body { background: var(--bg); }
+    .admin-topbar {
+      background: white; border-bottom: 1px solid var(--border);
+      padding: 0.75rem 0; position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+    }
+    .admin-page-header {
+      background: linear-gradient(140deg,#052e16,#166534);
+      padding: 2rem 0 3.5rem; color: white;
+    }
+    .admin-content { margin-top: -2rem; position: relative; z-index: 1; }
   </style>
 </head>
 <body>
-
-<div class="top-bar">
+<!-- Admin Top Bar -->
+<div class="admin-topbar">
   <div class="container d-flex align-items-center justify-content-between">
     <a href="/" style="font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--green);text-decoration:none;display:flex;align-items:center;gap:8px">
       <svg width="22" height="22" viewBox="0 0 26 26" fill="none"><rect width="26" height="26" rx="7" fill="#16a34a"/><path d="M13 6v14M6 13h14" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>
       Medical Continuity
     </a>
     <div class="d-flex align-items-center gap-3">
-      <a href="/admin/patients" style="font-weight:700;color:var(--green);font-size:.85rem;text-decoration:none">Patients</a>
-      <a href="/admin/doctors"  style="font-size:.85rem;color:#6b7280;text-decoration:none">Doctors</a>
-      <a href="/admin/logout"   class="btn btn-sm btn-outline-secondary" style="border-radius:20px;font-size:.82rem">Sign Out</a>
+      <a href="/admin/patients" class="nav-link" style="font-weight:600;color:var(--green)">Patients</a>
+      <a href="/admin/doctors"  class="nav-link">Doctors</a>
+      <a href="/admin/logout"   class="btn btn-sm btn-outline-primary" style="border-radius:20px;padding:5px 16px">Sign Out</a>
     </div>
   </div>
 </div>
 
-<div class="page-hero">
+<!-- Page Header -->
+<div class="admin-page-header">
   <div class="container">
-    <div style="font-size:.7rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.3rem">Admin Panel</div>
-    <h2 style="font-family:'DM Serif Display',serif;color:white;font-size:2rem;margin:0">Patient Records</h2>
-    <p style="color:rgba(255,255,255,.45);font-size:.85rem;margin-top:4px">Manage all registered patients</p>
+    <span style="font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;opacity:0.5">Admin Panel</span>
+    <h2 style="font-family:'DM Serif Display',serif;color:white;font-size:2rem;margin-top:4px">Patient Records</h2>
   </div>
 </div>
 
-<div class="container pull-up pb-5">
+<div class="container admin-content pb-5">
   <!-- Stats -->
   <div class="row g-3 mb-4">
     <div class="col-6 col-md-3">
-      <div class="stat-card">
-        <div class="stat-icon" style="background:#f0fdf4">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-        </div>
-        <div><div class="stat-num"><%= patients.length %></div><div class="stat-lbl">Total Patients</div></div>
+      <div class="stat-pill">
+        <div class="stat-pill-icon">👥</div>
+        <div><div class="stat-pill-num"><%= patients.length %></div><div class="stat-pill-lbl">Total Patients</div></div>
       </div>
     </div>
     <div class="col-6 col-md-3">
-      <div class="stat-card">
-        <div class="stat-icon" style="background:#eff6ff">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-        </div>
-        <div><div class="stat-num"><%= patients.filter(function(p){return p.qrCode;}).length %></div><div class="stat-lbl">QR Generated</div></div>
+      <div class="stat-pill">
+        <div class="stat-pill-icon">📋</div>
+        <div><div class="stat-pill-num"><%= patients.filter(p=>p.reports&&p.reports.length>0).length %></div><div class="stat-pill-lbl">With Reports</div></div>
       </div>
     </div>
     <div class="col-6 col-md-3">
-      <div class="stat-card">
-        <div class="stat-icon" style="background:#fef2f2">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>
-        </div>
-        <div><div class="stat-num"><%= patients.reduce(function(a,p){return a+(p.reports?p.reports.length:0);},0) %></div><div class="stat-lbl">With Reports</div></div>
+      <div class="stat-pill">
+        <div class="stat-pill-icon">🩸</div>
+        <div><div class="stat-pill-num"><%= patients.filter(p=>p.bloodGroup).length %></div><div class="stat-pill-lbl">Blood Group Set</div></div>
       </div>
     </div>
     <div class="col-6 col-md-3">
-      <div class="stat-card">
-        <div class="stat-icon" style="background:#fff7ed">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
-        </div>
-        <div><div class="stat-num"><%= patients.filter(function(p){return p.bloodGroup;}).length %></div><div class="stat-lbl">Blood Group Set</div></div>
+      <div class="stat-pill">
+        <div class="stat-pill-icon">📱</div>
+        <div><div class="stat-pill-num"><%= patients.filter(p=>p.qrCode).length %></div><div class="stat-pill-lbl">QR Generated</div></div>
       </div>
     </div>
-  </div>
-
-  <!-- Search + Manage Doctors -->
-  <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;flex-wrap:wrap">
-    <div class="search-bar" style="flex:1;margin:0;min-width:200px">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c4c9d4" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" class="search-input" id="searchInput" placeholder="Search by name or phone..." oninput="filterRows()">
-      <span style="font-size:.75rem;color:#c4c9d4;font-weight:600" id="countLabel"><%= patients.length %> patients</span>
-    </div>
-    <a href="/admin/doctors" style="background:white;border:1px solid #e5e7eb;border-radius:10px;padding:.65rem 1.2rem;font-size:.82rem;font-weight:700;color:#374151;text-decoration:none;white-space:nowrap">
-      Manage Doctors &rarr;
-    </a>
   </div>
 
   <!-- Table -->
-  <div class="table-card">
-    <div class="t-head">
-      <div class="t-head-cell">#</div>
-      <div class="t-head-cell">Patient</div>
-      <div class="t-head-cell">Phone</div>
-      <div class="t-head-cell">Blood</div>
-      <div class="t-head-cell">Emergency</div>
-      <div class="t-head-cell">Registered</div>
-      <div class="t-head-cell">Actions</div>
+  <% if (patients.length === 0) { %>
+    <div class="card-box text-center py-5">
+      <div style="font-size:3rem;margin-bottom:12px">👥</div>
+      <p style="color:var(--muted)">No patients registered yet.</p>
+      <a href="/patient/register" class="btn btn-primary mt-2">Register First Patient</a>
     </div>
-    <div id="tableBody">
-    <% if(patients.length === 0){ %>
-      <div class="empty-row">No patients registered yet.</div>
-    <% } %>
-    <% patients.forEach(function(p, idx){ %>
-    <div class="t-row patient-row" data-name="<%= p.name.toLowerCase() %>" data-phone="<%= p.phone %>">
-      <div class="row-num"><%= idx + 1 %></div>
-      <div class="pt-cell">
-        <% if(p.photo){ %>
-          <img src="<%= p.photo %>" class="pt-photo" onerror="this.src='/css/no-photo.png';this.onerror=null">
-        <% } else { %>
-          <div class="pt-photo" style="display:flex;align-items:center;justify-content:center;font-weight:800;color:#16a34a;font-size:.9rem;border:2px solid #bbf7d0">
-            <%= p.name.charAt(0).toUpperCase() %>
-          </div>
-        <% } %>
-        <div style="min-width:0">
-          <div class="pt-name"><%= p.name %></div>
-        </div>
-      </div>
-      <div class="phone-cell"><%= p.phone %></div>
-      <div><% if(p.bloodGroup){ %><span class="blood-pill"><%= p.bloodGroup %></span><% } else { %><span style="color:#d1d5db">-</span><% } %></div>
-      <div>
-        <div class="emg-cell"><%= p.emergencyName || '-' %></div>
-        <div class="emg-phone"><%= p.emergencyContact || '' %></div>
-      </div>
-      <div class="date-cell"><%= p.createdAt ? new Date(p.createdAt).toLocaleDateString('en-IN') : '-' %></div>
-      <div class="actions">
-        <a href="/admin/patient/<%= p._id %>" class="btn-view">View</a>
-        <a href="/admin/patient/<%= p._id %>/add-record" class="btn-report">+ Report</a>
-        <form method="POST" action="/admin/patient/<%= p._id %>/delete" style="display:inline" onsubmit="return confirm('Remove <%= p.name %>?')">
-          <button type="submit" class="btn-remove">Remove</button>
-        </form>
-      </div>
+  <% } else { %>
+  <div class="card-box p-0" style="overflow:hidden">
+    <div style="padding:1.2rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+      <h6 style="margin:0;font-weight:700">All Patients <span style="color:var(--muted);font-weight:500">(<%= patients.length %>)</span></h6>
+      <a href="/admin/doctors" class="btn btn-outline-primary btn-sm">Manage Doctors →</a>
     </div>
-    <% }) %>
+    <div style="overflow-x:auto">
+      <table class="table mb-0">
+        <thead>
+          <tr><th>#</th><th>Patient</th><th>Phone</th><th>Blood</th><th>Emergency</th><th>Registered</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+          <% patients.forEach((p, i) => { %>
+          <tr>
+            <td class="text-muted" style="font-size:0.82rem"><%= i+1 %></td>
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <% if(p.photo){ %>
+                  <img src="<%= BASE_URL %><%= p.photo %>" style="width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid var(--green-border)">
+                <% } else { %>
+                  <div style="width:34px;height:34px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:0.9rem">👤</div>
+                <% } %>
+                <strong style="font-size:0.9rem"><%= p.name %></strong>
+              </div>
+            </td>
+            <td style="font-size:0.88rem"><%= p.phone %></td>
+            <td><% if(p.bloodGroup){%><span class="badge-red"><%= p.bloodGroup %></span><%}else{%><span style="color:var(--muted)">—</span><%}%></td>
+            <td style="font-size:0.82rem;color:var(--muted)"><%= p.emergencyName %> · <%= p.emergencyContact %></td>
+            <td style="font-size:0.8rem;color:var(--muted)"><%= new Date(p.createdAt).toLocaleDateString('en-IN') %></td>
+            <td>
+              <a href="/admin/patient/<%= p._id %>" class="btn btn-primary btn-sm">View</a>
+              <a href="/admin/patient/<%= p._id %>/add-record" class="btn btn-outline-primary btn-sm ms-1">+ Report</a>
+              <form method="POST" action="/admin/patient/<%= p._id %>/delete" style="display:inline" onsubmit="return confirm('Remove <%= p.name %> and all their records permanently?')">
+                <button type="submit" class="btn btn-sm ms-1" style="background:#fef2f2;color:#b91c1c;border:1px solid #fca5a5;font-weight:600">Remove</button>
+              </form>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
     </div>
   </div>
+  <% } %>
 </div>
-
-<script>
-function filterRows() {
-  var q = document.getElementById('searchInput').value.toLowerCase();
-  var rows = document.querySelectorAll('.patient-row');
-  var count = 0;
-  rows.forEach(function(r) {
-    var match = r.dataset.name.includes(q) || r.dataset.phone.includes(q);
-    r.style.display = match ? '' : 'none';
-    if(match) count++;
-  });
-  document.getElementById('countLabel').textContent = count + ' patients';
-}
-</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+

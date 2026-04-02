@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>My Health Dashboard - Medical Continuity</title>
+  <title>My Health Dashboard — Medical Continuity</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
   <style>
     body { background:#f8fafc; }
-    /*  PAGE HEADER  */
+    /* ── PAGE HEADER ── */
     .dash-hero {
       background:linear-gradient(135deg,#052e16 0%,#14532d 50%,#166534 100%);
       padding:2.5rem 0 5rem; color:white; position:relative; overflow:hidden;
@@ -22,10 +22,10 @@
     .hero-name { font-family:'DM Serif Display',serif; font-size:2.2rem; color:white; margin-bottom:.25rem; }
     .hero-sub { font-size:.85rem; color:rgba(255,255,255,.5); }
 
-    /*  PULL-UP CARDS  */
+    /* ── PULL-UP CARDS ── */
     .cards-wrap { margin-top:-3rem; position:relative; z-index:2; }
 
-    /*  PROFILE CARD  */
+    /* ── PROFILE CARD ── */
     .profile-card {
       background:white; border-radius:20px;
       box-shadow:0 8px 40px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.05);
@@ -77,7 +77,7 @@
     .qr-label { font-size:.66rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#9ca3af; margin-top:6px; }
     .profile-bottom { padding:1rem 2rem; display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
 
-    /*  STATS ROW  */
+    /* ── STATS ROW ── */
     .stat-card {
       background:white; border:1px solid #e5e7eb; border-radius:16px;
       padding:1.25rem 1.5rem; box-shadow:0 2px 8px rgba(0,0,0,.05);
@@ -93,7 +93,7 @@
     .stat-num { font-family:'JetBrains Mono',monospace; font-size:1.6rem; font-weight:700; color:#111827; line-height:1; }
     .stat-lbl { font-size:.74rem; color:#9ca3af; font-weight:600; margin-top:2px; }
 
-    /*  UPLOAD SECTION  */
+    /* ── UPLOAD SECTION ── */
     .upload-card {
       background:white; border:1px solid #e5e7eb; border-radius:16px;
       padding:1.5rem; box-shadow:0 2px 8px rgba(0,0,0,.05);
@@ -101,7 +101,7 @@
     .upload-card h6 { font-size:.88rem; font-weight:800; color:#111827; margin-bottom:.2rem; }
     .upload-card .sub { font-size:.78rem; color:#9ca3af; margin-bottom:1.2rem; }
 
-    /*  REPORTS GRID  */
+    /* ── REPORTS GRID ── */
     .rep-card {
       background:white; border:1px solid #e5e7eb; border-radius:14px;
       overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.05);
@@ -146,11 +146,11 @@
       <!-- Avatar -->
       <div class="profile-avatar-wrap">
         <% if(patient.photo){ %>
-          <img src="<%= patient.photo %>" class="profile-avatar"
+          <img src="<%= BASE_URL %><%= patient.photo %>" class="profile-avatar"
                onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-          <div class="profile-avatar-placeholder" style="display:none"></div>
+          <div class="profile-avatar-placeholder" style="display:none">👤</div>
         <% } else { %>
-          <div class="profile-avatar-placeholder"></div>
+          <div class="profile-avatar-placeholder">👤</div>
         <% } %>
         <div class="status-dot"></div>
       </div>
@@ -159,16 +159,16 @@
       <div class="profile-info">
         <h2 class="patient-name"><%= patient.name %></h2>
         <p class="patient-meta">
-           <%= patient.phone %>
-          <% if(patient.gender){ %> &nbsp;.&nbsp; <%= patient.gender %><% } %>
-          <% if(patient.dateOfBirth){ %> &nbsp;.&nbsp; DOB: <%= patient.dateOfBirth %><% } %>
-          <% if(patient.address){ %> &nbsp;.&nbsp;  <%= patient.address %><% } %>
+          📞 <%= patient.phone %>
+          <% if(patient.gender){ %> &nbsp;·&nbsp; <%= patient.gender %><% } %>
+          <% if(patient.dateOfBirth){ %> &nbsp;·&nbsp; DOB: <%= patient.dateOfBirth %><% } %>
+          <% if(patient.address){ %> &nbsp;·&nbsp; 📍 <%= patient.address %><% } %>
         </p>
         <div class="badges-row">
-          <% if(patient.bloodGroup){    %><span class="bdg bdg-red"> <%= patient.bloodGroup %></span><% } %>
-          <% if(patient.allergies){     %><span class="bdg bdg-yellow"> <%= patient.allergies %></span><% } %>
-          <% if(patient.chronicDiseases){%><span class="bdg bdg-blue"> <%= patient.chronicDiseases %></span><% } %>
-          <span class="bdg bdg-green"> Health ID Active</span>
+          <% if(patient.bloodGroup){    %><span class="bdg bdg-red">🩸 <%= patient.bloodGroup %></span><% } %>
+          <% if(patient.allergies){     %><span class="bdg bdg-yellow">⚠️ <%= patient.allergies %></span><% } %>
+          <% if(patient.chronicDiseases){%><span class="bdg bdg-blue">🏥 <%= patient.chronicDiseases %></span><% } %>
+          <span class="bdg bdg-green">✓ Health ID Active</span>
         </div>
         <div class="emergency-pill">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a2 2 0 012-2.18h3.09"/></svg>
@@ -183,10 +183,10 @@
       <div class="profile-qr">
         <% if(patient.qrCode){ %>
           <div class="qr-box">
-            <img src="<%= patient.qrCode %>" onerror="this.style.display='none'">
+            <img src="<%= BASE_URL %><%= patient.qrCode %>" onerror="this.style.display='none'">
           </div>
           <div class="qr-label">Scan for Emergency</div>
-          <a href="<%= patient.qrCode %>" download="health-qr.png"
+          <a href="<%= BASE_URL %><%= patient.qrCode %>" download="health-qr.png"
              style="display:inline-flex;align-items:center;gap:5px;font-size:.74rem;color:#16a34a;font-weight:700;text-decoration:none;margin-top:4px">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             Download QR
@@ -197,8 +197,8 @@
 
     <!-- Bottom actions -->
     <div class="profile-bottom">
-      <a href="/" class="btn btn-outline-primary btn-sm"> Home</a>
-      <a href="/patient/update/<%= patient.phone %>" class="btn btn-sm" style="background:#f0fdf4;color:#166534;border:1px solid #bbf7d0;font-weight:700"> Update Medical Details</a>
+      <a href="/" class="btn btn-outline-primary btn-sm">🏠 Home</a>
+      <a href="/patient/update/<%= patient.phone %>" class="btn btn-sm" style="background:#f0fdf4;color:#166534;border:1px solid #bbf7d0;font-weight:700">✏️ Update Medical Details</a>
       <a href="/patient/register" class="btn btn-sm" style="background:#f9fafb;color:#374151;border:1px solid #e5e7eb;font-weight:700">Register New ID</a>
     </div>
   </div>
@@ -207,7 +207,7 @@
   <div class="row g-3 mb-4">
     <div class="col-md-4">
       <div class="stat-card">
-        <div class="stat-icon green"></div>
+        <div class="stat-icon green">📋</div>
         <div>
           <div class="stat-num"><%= patient.reports ? patient.reports.length : 0 %></div>
           <div class="stat-lbl">Total Reports</div>
@@ -216,7 +216,7 @@
     </div>
     <div class="col-md-4">
       <div class="stat-card">
-        <div class="stat-icon red"></div>
+        <div class="stat-icon red">💊</div>
         <div>
           <div class="stat-num"><%= patient.medicines ? patient.medicines.filter(m=>m.name).length : 0 %></div>
           <div class="stat-lbl">Active Medicines</div>
@@ -225,7 +225,7 @@
     </div>
     <div class="col-md-4">
       <div class="stat-card">
-        <div class="stat-icon blue"></div>
+        <div class="stat-icon blue">🏥</div>
         <div>
           <div class="stat-num"><%= patient.medicalHistory ? patient.medicalHistory.filter(h=>h.date||h.diagnosis).length : 0 %></div>
           <div class="stat-lbl">Past Treatments</div>
@@ -241,7 +241,7 @@
         <h6>Upload New Report</h6>
         <p class="sub">Add scan reports, prescriptions or lab results</p>
         <% if(error){   %><div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:.65rem .9rem;font-size:.82rem;color:#b91c1c;margin-bottom:1rem"><%= error %></div><% } %>
-        <% if(success){ %><div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:.65rem .9rem;font-size:.82rem;color:#166534;margin-bottom:1rem"> <%= success %></div><% } %>
+        <% if(success){ %><div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:.65rem .9rem;font-size:.82rem;color:#166534;margin-bottom:1rem">✅ <%= success %></div><% } %>
         <form method="POST" action="/patient/upload-report/<%= patient.phone %>" enctype="multipart/form-data">
           <div class="mb-3">
             <label class="form-label" style="font-size:.78rem;font-weight:700">Report Title</label>
@@ -271,7 +271,7 @@
       </div>
       <% if(!patient.reports || patient.reports.length === 0){ %>
         <div class="empty-state">
-          <div class="empty-icon"></div>
+          <div class="empty-icon">📂</div>
           <p class="empty-txt">No reports yet. Upload your first report using the form.</p>
         </div>
       <% } else { %>
@@ -280,8 +280,8 @@
           <div class="col-sm-6">
             <div class="rep-card">
               <% if(r.fileUrl){ %>
-                <a href="<%= r.fileUrl %>" target="_blank">
-                  <img src="<%= r.fileUrl %>" class="rep-thumb"
+                <a href="<%= BASE_URL %><%= r.fileUrl %>" target="_blank">
+                  <img src="<%= BASE_URL %><%= r.fileUrl %>" class="rep-thumb"
                        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
                   <div class="pdf-ph" style="display:none">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>

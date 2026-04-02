@@ -2,109 +2,71 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Doctor Dashboard - Medical Continuity</title>
+  <title>Doctor Dashboard — Medical Continuity</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
   <style>
-    body { background: #f8faf8; }
-    .dash-hero { background: linear-gradient(135deg,#052e16,#166534); padding: 2.5rem 0 5rem; color: white; }
-    .doc-card { background: white; border-radius: 20px; box-shadow: 0 4px 24px rgba(0,0,0,.08); padding: 2rem; margin-top: -3rem; position: relative; z-index: 2; }
-    .doc-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #bbf7d0; background: #f0fdf4; display: flex; align-items: center; justify-content: center; font-size: 2rem; overflow: hidden; flex-shrink: 0; }
-    .doc-avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .search-card { background: white; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,.06); padding: 1.5rem; }
-    .search-card h5 { font-family: 'DM Serif Display',serif; color: #111827; margin-bottom: .5rem; }
-    .form-control { border: 1.5px solid #e5e7eb; border-radius: 10px; padding: .7rem 1rem; font-size: .9rem; }
-    .form-control:focus { border-color: #16a34a; box-shadow: 0 0 0 4px rgba(22,163,74,.1); outline: none; }
-    .btn-search { background: #16a34a; color: white; border: none; border-radius: 10px; padding: .7rem 2rem; font-weight: 700; cursor: pointer; transition: all .2s; }
-    .btn-search:hover { background: #15803d; }
-    .err-box { background: #fef2f2; border: 1px solid #fecaca; border-radius: 10px; padding: .75rem 1rem; font-size: .85rem; color: #b91c1c; margin-bottom: 1rem; }
-    .msg-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: .75rem 1rem; font-size: .85rem; color: #166534; margin-bottom: 1rem; }
-    .info-row { display: flex; gap: .5rem; align-items: center; font-size: .82rem; color: #6b7280; margin-top: 4px; }
-    .step-card { background: white; border: 1px solid #e5e7eb; border-radius: 14px; padding: 1.2rem; text-align: center; }
-    .step-num { width: 36px; height: 36px; border-radius: 50%; background: #f0fdf4; border: 2px solid #bbf7d0; color: #16a34a; font-weight: 800; font-size: .9rem; display: flex; align-items: center; justify-content: center; margin: 0 auto .75rem; }
-    .step-title { font-weight: 700; font-size: .85rem; color: #111827; margin-bottom: 4px; }
-    .step-desc { font-size: .75rem; color: #6b7280; }
+    .doctor-hero {
+      background: linear-gradient(140deg,#052e16,#166534);
+      padding: 2.5rem 0 4.5rem; color: white;
+    }
+    .access-card {
+      background: white; border-radius: var(--radius-lg);
+      padding: 2.5rem; box-shadow: var(--shadow-md);
+      border: 1px solid var(--border);
+      max-width: 560px; width: 100%;
+      position: relative; z-index: 1;
+      margin-top: -2.5rem;
+    }
   </style>
 </head>
 <body>
 <%- include('../partials/navbar') %>
 
-<div class="dash-hero">
+<div class="doctor-hero">
   <div class="container">
-    <div style="font-size:.7rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.4rem">Doctor Portal</div>
-    <h2 style="font-family:'DM Serif Display',serif;color:white;font-size:2rem;margin:0">Welcome, Dr. <%= doctorName %></h2>
-    <p style="color:rgba(255,255,255,.5);font-size:.85rem;margin-top:4px">Access patient records securely with OTP verification</p>
-  </div>
-</div>
-
-<div class="container pb-5">
-  <!-- Doctor Card -->
-  <div class="doc-card mb-4">
-    <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap">
-      <div class="doc-avatar">
-        <% if(doctorPhoto){ %>
-          <img src="<%= doctorPhoto %>" onerror="this.parentElement.textContent='Dr'">
-        <% } else { %>
-          Dr
-        <% } %>
+    <div class="d-flex align-items-center gap-3">
+      <div style="width:52px;height:52px;background:rgba(255,255,255,0.12);border-radius:14px;display:flex;align-items:center;justify-content:center">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       </div>
       <div>
-        <div style="font-family:'DM Serif Display',serif;font-size:1.4rem;color:#111827">Dr. <%= doctorName %></div>
-        <% if(doctorHospital){ %>
-          <div class="info-row">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-            <%= doctorHospital %>
-          </div>
-        <% } %>
-        <div class="info-row" style="margin-top:6px">
-          <span style="background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;font-size:.72rem;font-weight:700;padding:2px 10px;border-radius:20px">Verified Doctor</span>
-        </div>
+        <p style="font-size:0.75rem;text-transform:uppercase;letter-spacing:2px;opacity:0.5;margin-bottom:2px">Doctor Portal</p>
+        <h3 style="font-family:'DM Serif Display',serif;color:white;margin:0;font-size:1.6rem">Dr. <%= doctorName %></h3>
       </div>
-      <div style="margin-left:auto">
-        <a href="/doctor/logout" style="color:#6b7280;font-size:.82rem;font-weight:600;text-decoration:none;border:1px solid #e5e7eb;border-radius:8px;padding:6px 16px">Sign Out</a>
-      </div>
-    </div>
-  </div>
-
-  <% if(error){ %><div class="err-box"><%= error %></div><% } %>
-  <% if(message){ %><div class="msg-box"><%= message %></div><% } %>
-
-  <!-- Search Patient -->
-  <div class="search-card mb-4">
-    <h5>Access Patient Records</h5>
-    <p style="font-size:.85rem;color:#6b7280;margin-bottom:1.2rem">Enter the patient's registered phone number to send an OTP to their emergency contact.</p>
-    <form method="POST" action="/doctor/request-otp">
-      <div style="display:flex;gap:.75rem;flex-wrap:wrap">
-        <input type="text" name="phone" class="form-control" placeholder="Patient phone number (e.g. 9876543210)" required style="flex:1;min-width:200px">
-        <button type="submit" class="btn-search">Send OTP</button>
-      </div>
-    </form>
-  </div>
-
-  <!-- Steps -->
-  <div class="row g-3">
-    <div class="col-md-4">
-      <div class="step-card">
-        <div class="step-num">1</div>
-        <div class="step-title">Enter Phone Number</div>
-        <div class="step-desc">Enter the patient's registered mobile number in the search box above</div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="step-card">
-        <div class="step-num">2</div>
-        <div class="step-title">Patient Receives OTP</div>
-        <div class="step-desc">A 6-digit OTP is sent to the patient's emergency contact for consent</div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="step-card">
-        <div class="step-num">3</div>
-        <div class="step-title">View Full Records</div>
-        <div class="step-desc">After OTP verification, access medicines, history, and reports</div>
-      </div>
+      <span class="badge-green ms-auto" style="background:rgba(255,255,255,0.15);color:#86efac">Verified</span>
     </div>
   </div>
 </div>
+
+<div class="container py-4 pb-5">
+  <div class="access-card mx-auto">
+    <h5 style="margin-bottom:0.3rem">Access Patient Records</h5>
+    <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1.8rem">Enter the patient's registered phone number. An OTP will be generated for verification before you can view their records.</p>
+
+    <% if (error)   { %><div class="alert-danger mb-3"><%= error %></div><% } %>
+    <% if (message) { %><div class="alert-success mb-3"><%= message %></div><% } %>
+
+    <form method="POST" action="/doctor/request-otp">
+      <label class="form-label">Patient's Phone Number</label>
+      <div class="d-flex gap-2 mb-4">
+        <input type="text" name="phone" class="form-control" placeholder="+91 9876543210 or 9876543210" required style="flex:1">
+        <button type="submit" class="btn btn-primary" style="white-space:nowrap;padding:0.62rem 1.4rem">Request OTP</button>
+      </div>
+    </form>
+
+    <div style="background:var(--green-light);border-radius:var(--radius-sm);padding:1rem 1.2rem;border:1px solid var(--green-border)">
+      <p style="font-size:0.8rem;color:var(--green-mid);margin:0;line-height:1.6">
+        <strong>How it works:</strong> An OTP will be displayed on the patient's registration page. Enter it on the next screen to gain access to their full medical records.
+      </p>
+    </div>
+
+    <div style="border-top:1px solid var(--border);margin-top:1.8rem;padding-top:1.2rem">
+      <a href="/logout" class="btn btn-outline-primary w-100">Sign Out</a>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

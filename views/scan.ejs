@@ -102,15 +102,15 @@
 
   <div class="top-bar">
     <div>
-      <div class="brand"> Emergency QR Scanner</div>
-      <div class="subtitle">Medical Continuity - Public Access . No login required</div>
+      <div class="brand">🏥 Emergency QR Scanner</div>
+      <div class="subtitle">Medical Continuity — Public Access · No login required</div>
     </div>
-    <span class="emergency-pill"> FREE</span>
+    <span class="emergency-pill">🚨 FREE</span>
   </div>
 
   <div class="camera-wrap" id="camera-wrap">
     <div class="camera-placeholder" id="placeholder">
-      <div class="cam-icon"></div>
+      <div class="cam-icon">📷</div>
       <p>Tap <strong style="color:#4ade80">Start Scanner</strong> below<br>to open your camera and scan<br>a patient's health QR code</p>
     </div>
     <video id="qr-video" autoplay playsinline muted style="display:none"></video>
@@ -131,19 +131,19 @@
   <div class="bottom-panel">
     <div class="status-row">
       <div class="status-dot off" id="sdot"></div>
-      <span class="status-text" id="stxt">Camera off - tap Start to begin</span>
+      <span class="status-text" id="stxt">Camera off — tap Start to begin</span>
     </div>
     <button class="start-btn" id="main-btn" onclick="toggleCam()">
-      <span id="bico"></span><span id="blbl">Start Scanner</span>
+      <span id="bico">📷</span><span id="blbl">Start Scanner</span>
     </button>
     <div class="or-divider">or paste QR link manually</div>
     <div class="manual-row">
-      <input class="manual-input" id="murl" placeholder="Paste QR URL or token here..." type="text">
-      <button class="go-btn" onclick="handleManual()">Go &rarr;</button>
+      <input class="manual-input" id="murl" placeholder="Paste QR URL or token here…" type="text">
+      <button class="go-btn" onclick="handleManual()">Go →</button>
     </div>
     <div class="err" id="errmsg" style="display:none"></div>
     <div class="info-note">
-       Scanning shows only emergency contact &amp; basic info.<br>Full medical records are protected - doctors need OTP.
+      🔒 Scanning shows only emergency contact &amp; basic info.<br>Full medical records are protected — doctors need OTP.
     </div>
   </div>
 
@@ -176,16 +176,16 @@
 
   async function startCam(){
     document.getElementById('errmsg').style.display='none';
-    stxt.textContent='Requesting camera...'; sdot.classList.add('off');
+    stxt.textContent='Requesting camera…'; sdot.classList.add('off');
     try {
       stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:1280}}});
       video.srcObject=stream; await video.play();
       live=true;
       ph.style.display='none'; video.style.display='block'; overlay.style.display='block';
-      document.getElementById('bico').textContent='';
+      document.getElementById('bico').textContent='⛔';
       document.getElementById('blbl').textContent='Stop Scanner';
       sdot.classList.remove('off');
-      stxt.textContent='Scanning... point camera at QR code';
+      stxt.textContent='Scanning… point camera at QR code';
       layout(); window.addEventListener('resize',layout);
       ticker=setInterval(scan,250);
     } catch(e){
@@ -193,7 +193,7 @@
       sdot.classList.add('off');
       const em=document.getElementById('errmsg');
       em.style.display='block';
-      em.textContent=' Camera permission denied. Allow camera in browser settings, or use manual input below.';
+      em.textContent='❌ Camera permission denied. Allow camera in browser settings, or use manual input below.';
     }
   }
 
@@ -202,9 +202,9 @@
     if(ticker){clearInterval(ticker);ticker=null;}
     live=false;
     video.style.display='none'; overlay.style.display='none'; ph.style.display='flex';
-    document.getElementById('bico').textContent='';
+    document.getElementById('bico').textContent='📷';
     document.getElementById('blbl').textContent='Start Scanner';
-    sdot.classList.add('off'); stxt.textContent='Camera off - tap Start to begin';
+    sdot.classList.add('off'); stxt.textContent='Camera off — tap Start to begin';
     window.removeEventListener('resize',layout);
   }
 
@@ -216,7 +216,7 @@
     const c=jsQR(d.data,d.width,d.height,{inversionAttempts:'dontInvert'});
     if(c){
       flash.classList.add('active'); setTimeout(()=>flash.classList.remove('active'),180);
-      stxt.textContent=' QR detected! Redirecting...';
+      stxt.textContent='✅ QR detected! Redirecting…';
       stopCam();
       const v=c.data.trim();
       setTimeout(()=>{
@@ -231,7 +231,7 @@
   function handleManual(){
     const v=document.getElementById('murl').value.trim();
     const em=document.getElementById('errmsg'); em.style.display='none';
-    if(!v){em.style.display='block';em.textContent=' Please paste a URL or token.';return;}
+    if(!v){em.style.display='block';em.textContent='⚠️ Please paste a URL or token.';return;}
     if(v.startsWith('http')){
       const m=v.match(/\/emergency\/([a-f0-9\-]{36})/i);
       window.location.href=m?'/patient/emergency/'+m[1]:v;
