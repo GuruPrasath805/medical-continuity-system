@@ -135,7 +135,7 @@
 <!-- PATIENT BANNER -->
 <div class="pt-banner">
   <% if(patient.photo){ %>
-    <img src="<%= BASE_URL %><%= patient.photo %>" class="pt-photo"
+    <img src="<%= patient.photo %>" class="pt-photo"
          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
     <div class="pt-photo-ph" style="display:none">👤</div>
   <% } else { %>
@@ -165,7 +165,7 @@
 
   <% if(patient.qrCode){ %>
   <div class="pt-qr">
-    <img src="<%= BASE_URL %><%= patient.qrCode %>" onerror="this.style.display='none'">
+    <img src="<%= patient.qrCode %>" onerror="this.style.display='none'">
     <div class="pt-qr-lbl">Health QR</div>
   </div>
   <% } %>
@@ -414,8 +414,8 @@
         <% records.forEach(r=>{ %>
         <div class="rep-card">
           <% if(r.reportImage){ %>
-            <a href="<%= BASE_URL %><%= r.reportImage %>" target="_blank">
-              <img src="<%= BASE_URL %><%= r.reportImage %>" class="rep-thumb"
+            <a href="<%= r.reportImage %>" target="_blank">
+              <img src="<%= r.reportImage %>" class="rep-thumb"
                    onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
               <div class="rep-pdf" style="display:none">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
@@ -442,8 +442,8 @@
         <% patient.reports.slice().reverse().forEach(r=>{ %>
         <div class="rep-card">
           <% if(r.fileUrl){ %>
-            <a href="<%= BASE_URL %><%= r.fileUrl %>" target="_blank">
-              <img src="<%= BASE_URL %><%= r.fileUrl %>" class="rep-thumb"
+            <a href="<%= r.fileUrl %>" target="_blank">
+              <img src="<%= r.fileUrl %>" class="rep-thumb"
                    onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
               <div class="rep-pdf" style="display:none">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
